@@ -9,7 +9,7 @@ const stories = [
 ["家长 · 李梦颖","撕掉天才滤镜","孤独症孩子并不都是天才，只有极少数人拥有绘画音乐特长。大部分只是普通孩子。孩子独自坐地铁，但刻板动作会招来旁人异样目光。他们不会伤害别人，只是活在自己的星球。"],
 ["毛宇家长","父母老去之后","康复的路很漫长。我们最大的恐惧：如果我们老去离开，孩子该如何有尊严活下去。"]
 ];
-const questions = [
+const questions: [string, string[], number, string][] = [
 ["孤独症孩子大多是绘画、音乐方面的天才？",["是，孤独症通常伴随特殊天赋","不是，特殊才能只出现在少数人身上"],1,"孤独症谱系内部差异很大。少数人有某些突出能力，但不能把“天才”当作普遍特征；大多数孩子和其他孩子一样，有自己的兴趣、优势与支持需求。"],
 ["产检正常，就不会生出孤独症宝宝？",["正确，常规产检可以排除","错误，常规产检不能筛查或排除孤独症"],1,"孤独症是复杂的神经发育状况，目前没有常规产前筛查能够预测或排除大多数孤独症。不要把它归咎于父母做错了什么。"],
 ["孩子在公共场合哭闹、捂耳朵，是调皮没教养？",["是，需要当场制止","不一定，可能是感官过载或沟通困难"],1,"声音、光线、拥挤和不可预测的变化都可能带来压力。先减少刺激、留出空间、尊重孩子的表达，而不是围观或责备。"],
@@ -29,12 +29,12 @@ export default function AutismExperience() {
  const audio=useRef<{ctx:AudioContext;master:GainNode}|null>(null);
  useEffect(()=>{const m=window.matchMedia("(prefers-reduced-motion: reduce)");const f=()=>setReduced(m.matches);f();m.addEventListener?.("change",f);return()=>m.removeEventListener?.("change",f)},[]);
  const stop=()=>{const a=audio.current;if(a){a.master.gain.setTargetAtTime(0,a.ctx.currentTime,.03);window.setTimeout(()=>void a.ctx.close(),100);audio.current=null}setSoundOn(false)};
- const start=async()=>{if(muted||audio.current)return;const Ctx=window.AudioContext;const ctx=new Ctx();await ctx.resume();const master=ctx.createGain();master.gain.value=Math.min(.18,volume/100*.18);master.connect(ctx.destination);
+ const start=async()=>{if(muted||audio.current)return;const Ctx=window.AudioContext;const ctx=new Ctx();await ctx.resume();const master=ctx.createGain();master.gain.value=Math.min(.18,volume/18*.18);master.connect(ctx.destination);
  const tone=(hz:number,wave:OscillatorType,gain:number)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type=wave;o.frequency.value=hz;g.gain.value=gain;o.connect(g);g.connect(master);o.start()};
  tone(110,"sine",.13);tone(220,"triangle",.04);tone(330,"sine",.02);
  const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.04;
  const n=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();n.buffer=b;n.loop=true;f.type="lowpass";f.frequency.value=520;g.gain.value=.1;n.connect(f);f.connect(g);g.connect(master);n.start();audio.current={ctx,master};setSoundOn(true)};
- useEffect(()=>{if(audio.current)audio.current.master.gain.setTargetAtTime(muted?0:Math.min(.18,volume/100*.18),audio.current.ctx.currentTime,.06)},[muted,volume]);
+ useEffect(()=>{if(audio.current)audio.current.master.gain.setTargetAtTime(muted?0:Math.min(.18,volume/18*.18),audio.current.ctx.currentTime,.06)},[muted,volume]);
  useEffect(()=>()=>{if(audio.current)void audio.current.ctx.close()},[]);
  const go=(id:string)=>document.getElementById(id)?.scrollIntoView({behavior:reduced?"auto":"smooth"});
  const story=stories[storyIndex],done=Object.keys(answers).length;

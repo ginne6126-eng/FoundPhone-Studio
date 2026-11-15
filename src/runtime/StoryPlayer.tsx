@@ -4,7 +4,9 @@ import { Phone } from "../Phone";
 import { validateWork, type Work } from "../schema";
 import "../styles.css";
 import "./player.css";
-function StoryPlayer() {
+import AutismExperience from "./AutismExperience";
+
+function PhoneStoryPlayer() {
   const [work, setWork] = useState<Work | null>(null),
     [error, setError] = useState("");
   useEffect(() => {
@@ -23,8 +25,7 @@ function StoryPlayer() {
       })
       .then((x) => {
         const w = validateWork(x);
-        document.title =
-          w.title === "捡手机" ? "捡手机" : w.title + " · 捡手机";
+        document.title = w.title === "捡手机" ? "捡手机" : w.title + " · 捡手机";
         setWork(w);
       })
       .catch((e) => {
@@ -32,14 +33,17 @@ function StoryPlayer() {
       });
     return () => abort.abort();
   }, []);
-  return (
-    <main className="story-runtime">
-      {work ? (
-        <Phone work={work} />
-      ) : (
-        <p role="status">{error || "正在打开手机…"}</p>
-      )}
-    </main>
-  );
+  return <main className="story-runtime">{work ? <Phone work={work} /> : <p role="status">{error || "正在打开手机…"}</p>}</main>;
 }
-createRoot(document.getElementById("root")!).render(<StoryPlayer />);
+
+function Entry() {
+  const phoneMode = new URLSearchParams(location.search).get("phone") === "1"
+    || new URLSearchParams(location.search).get("preview") === "test"
+    || new URLSearchParams(location.search).get("template") === "blank";
+  useEffect(() => {
+    if (!phoneMode) document.title = "星星的孩子｜走进孤独症的世界";
+  }, [phoneMode]);
+  return phoneMode ? <PhoneStoryPlayer /> : <AutismExperience />;
+}
+
+createRoot(document.getElementById("root")!).render(<Entry />);

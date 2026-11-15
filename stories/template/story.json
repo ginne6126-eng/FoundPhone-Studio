@@ -2,7 +2,7 @@
   "scriptVersion": 1,
   "id": "ui-test-phone-v2",
   "title": "看见不一样的世界",
-"description": "一部关于孤独症群体日常生活、感官体验与社会理解的互动手机故事"
+"description": "一部关于孤独症群体日常生活、感官体验与社会理解的互动手机故事"，
   "revision": 2,
   "phone": {
     "owner": "机主",

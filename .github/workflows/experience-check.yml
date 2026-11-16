@@ -1,0 +1,26 @@
+name: Build native 3D experience
+on:
+  push:
+    branches: [feature/autism-awareness-site]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-experience:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: false-earth-experience
+          path: dist/experience/
+          if-no-files-found: error
+          retention-days: 7

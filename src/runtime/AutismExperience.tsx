@@ -42,7 +42,7 @@ export default function AutismExperience() {
  const handleArmDown=(e:ReactPointerEvent<HTMLDivElement>)=>{e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);setArmDragging(true);moveTonearm(e.clientX,e.clientY)};
  const handleArmMove=(e:ReactPointerEvent<HTMLDivElement>)=>{if(armDragging)moveTonearm(e.clientX,e.clientY)};
  useEffect(()=>{const m=window.matchMedia("(prefers-reduced-motion: reduce)");const f=()=>setReduced(m.matches);f();m.addEventListener?.("change",f);return()=>m.removeEventListener?.("change",f)},[]);
- const stop=()=>{needleContact.current=false;const a=audio.current;if(a){a.master.gain.setTargetAtTime(0,a.ctx.currentTime,.03);window.setTimeout(()=>void a.ctx.close(),100);audio.current=null}setSoundOn(false)};
+ const stop=()=>{needleContact.current=false;setNeedleOnRecord(false);const a=audio.current;if(a){a.master.gain.setTargetAtTime(0,a.ctx.currentTime,.03);window.setTimeout(()=>void a.ctx.close(),100);audio.current=null}setSoundOn(false)};
  const start=async()=>{if(muted||audio.current||audioStarting.current)return;audioStarting.current=true;const Ctx=window.AudioContext;const ctx=new Ctx();try{await ctx.resume()}catch{audioStarting.current=false;void ctx.close();return}if(!needleContact.current||muted){audioStarting.current=false;void ctx.close();return}const master=ctx.createGain();master.gain.value=.015;master.connect(ctx.destination);master.gain.linearRampToValueAtTime(Math.min(.18,volume/18*.18),ctx.currentTime+4);
  const tone=(hz:number,wave:OscillatorType,gain:number)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type=wave;o.frequency.value=hz;g.gain.value=gain;o.connect(g);g.connect(master);o.start()};
  tone(110,"sine",.13);tone(220,"triangle",.04);tone(330,"sine",.02);

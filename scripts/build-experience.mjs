@@ -10,12 +10,18 @@ await writeFile(resolve(source,"src/components/character/Character.tsx"),await r
 const loadingPath=resolve(source,"src/ui/LoadingScreen.tsx");
 let loading=await readFile(loadingPath,"utf8");
 loading=loading.replace("FALSE EARTH","星星的孩子")
-.replace("After drifting beyond the edge of space, the journey reaches ground again.\n                            A surface extends in every direction, without a visible boundary.\n                            No matter how far it continues, the horizon does not draw closer.","我们生活在同一个世界里，却不一定拥有相同的感受。\n                            这里是一颗陌生的星球。你可以按照自己的节奏，慢慢开始探索。")
-.replace("With each step, something descends and alters the surface, leaving traces behind.\n                            The drift does not end here; it continues in another form.","不需要完成任务，也没有正确路线。停下来、转身或继续向前，都由你决定。")
+.replace(/<p>\s*After drifting beyond the edge of space,[\\s\\S]*?<\\/p>/,"<p>我们生活在同一个世界里，却不一定拥有相同的感受。这里是一颗陌生的星球。你可以按照自己的节奏，慢慢开始探索。</p>")
+.replace(/<p>\s*With each step, something descends[\\s\\S]*?<\\/p>/,"<p>不需要完成任务，也没有正确路线。停下来、转身或继续向前，都由你决定。</p>")
 .replace("[ START ]","进入陌生星球")
 .replace('label="MOVE"','label="移动"').replace('label="RUN"','label="奔跑"').replace('label="CAM"','label="镜头"').replace('label="LOOK"','label="观察"')
 .replace("SYSTEM INCOMPATIBLE","当前浏览器暂不支持此体验");
+if(loading.includes("After drifting")||loading.includes("With each step"))throw new Error("English opening copy was not replaced.");
 await writeFile(loadingPath,loading);
+const htmlPath=resolve(source,"index.html");
+let html=await readFile(htmlPath,"utf8");
+html=html.replace('<html lang="en">','<html lang="zh-CN">').replace("<title>False Earth</title>","<title>星星的孩子｜进入陌生星球</title>").replace('maximum-scale=1.0, user-scalable=0, ','');
+if(html.includes("<title>False Earth</title>"))throw new Error("Original English document title remains.");
+await writeFile(htmlPath,html);
 const uiPath=resolve(source,"src/ui/UI.tsx");
 let ui=await readFile(uiPath,"utf8");
 const loadingAnchor="            <LoadingScreen />";

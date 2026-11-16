@@ -37,13 +37,18 @@ function PhoneStoryPlayer() {
 }
 
 function Entry() {
-  const phoneMode = new URLSearchParams(location.search).get("phone") === "1"
-    || new URLSearchParams(location.search).get("preview") === "test"
-    || new URLSearchParams(location.search).get("template") === "blank";
+  const params = new URLSearchParams(location.search);
+  const phoneMode = params.get("phone") === "1"
+    || params.get("preview") === "test"
+    || params.get("template") === "blank";
+  const chaptersMode = params.get("chapters") === "1";
   useEffect(() => {
-    if (!phoneMode) document.title = "星星的孩子｜走进孤独症的世界";
-  }, [phoneMode]);
-  return phoneMode ? <PhoneStoryPlayer /> : <AutismExperience />;
+    if (!phoneMode && !chaptersMode) {
+      document.title = "星星的孩子｜走进孤独症的世界";
+      window.location.replace(new URL("./experience/index.html", window.location.href).toString());
+    }
+  }, [phoneMode, chaptersMode]);
+  return phoneMode ? <PhoneStoryPlayer /> : chaptersMode ? <AutismExperience /> : <main className="story-runtime" aria-live="polite">正在进入陌生星球…</main>;
 }
 
 createRoot(document.getElementById("root")!).render(<Entry />);

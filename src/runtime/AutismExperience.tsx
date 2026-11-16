@@ -58,14 +58,14 @@ export default function AutismExperience() {
  <header className="site-nav"><a className="wordmark" href="#top">星星的孩子 <span>· 认识孤独症</span></a><nav><a href="#experience">感官体验</a><a href="#families">家庭故事</a><a href="#facts">现实数据</a><a href="#quiz">认知测试</a><a href="#action">行动指南</a></nav><button className="global-mute" onClick={()=>{const v=!muted;setMuted(v);if(v)stop()}}>{muted?<VolumeX/>:<Volume2/>}{muted?"已静音":"全局静音"}</button></header>
  <main id="top">
  <section className="immersive-intro" id="top" aria-label="沉浸式序章">
- <iframe className="immersive-world" src="https://false-earth.mingjyunhung.com/" title="False Earth 互动式自然景观体验" allow="fullscreen; webgpu" allowFullScreen loading="eager" referrerPolicy="strict-origin-when-cross-origin"/>
+ <div className="immersive-world" aria-hidden="true" />
  <div className="immersive-shade" aria-hidden="true"/>
  <div className="immersive-copy">
   <p className="eyebrow">A DIFFERENT WAY TO FEEL THE WORLD</p>
   <h1>我们生活在同一个世界里，<br/><em>却不一定拥有相同的感受。</em></h1>
   <p>先停留片刻，感受这个世界。再一起走近那些不同的感知方式。</p>
-  <button className="primary-cta" onClick={()=>go("experience")}>继续探索 <ArrowDown size={17}/></button>
-  <div className="immersive-credit">沉浸式场景原作：Ming Jyun Hung · <a href="https://false-earth.mingjyunhung.com/" target="_blank" rel="noreferrer">在新窗口打开体验 ↗</a></div>
+  <a className="primary-cta" href="./experience/index.html">进入陌生星球 <ArrowDown size={17}/></a>
+  <div className="immersive-credit">原作 3D 场景已作为本站独立体验构建 · <a href="./experience/index.html">进入 3D 场景 ↗</a></div>
  </div>
  <button className="immersive-skip" onClick={()=>go("experience")}>跳过开场 <ArrowDown size={14}/></button>
  <span className="immersive-hint">可用鼠标探索 · 无需开启声音</span>

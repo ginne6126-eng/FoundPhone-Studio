@@ -26,7 +26,18 @@ export default function AutismExperience() {
  const [soundOn,setSoundOn]=useState(false),[muted,setMuted]=useState(false),[volume,setVolume]=useState(18);
  const [storyIndex,setStoryIndex]=useState(0),[answers,setAnswers]=useState<Record<number,number>>({}),[expanded,setExpanded]=useState<number|null>(null);
  const [reduced,setReduced]=useState(false);
+ const [armAngle,setArmAngle]=useState(-29),[armDragging,setArmDragging]=useState(false);
+ const turntableRef=useRef<HTMLDivElement|null>(null);
  const audio=useRef<{ctx:AudioContext;master:GainNode}|null>(null),storyPointer=useRef<number|null>(null);
+ const moveTonearm=(clientX:number,clientY:number)=>{
+  const rect=turntableRef.current?.getBoundingClientRect();if(!rect)return;
+  const pivotX=rect.width*.85,pivotY=rect.height*.17;
+  const pointerAngle=Math.atan2(clientY-rect.top-pivotY,clientX-rect.left-pivotX)*180/Math.PI;
+  const angle=Math.max(-65,Math.min(-15,pointerAngle-180));
+  setArmAngle(angle);
+ };
+ const handleArmDown=(e:React.PointerEvent<HTMLDivElement>)=>{e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);setArmDragging(true);moveTonearm(e.clientX,e.clientY)};
+ const handleArmMove=(e:React.PointerEvent<HTMLDivElement>)=>{if(armDragging)moveTonearm(e.clientX,e.clientY)};
  useEffect(()=>{const m=window.matchMedia("(prefers-reduced-motion: reduce)");const f=()=>setReduced(m.matches);f();m.addEventListener?.("change",f);return()=>m.removeEventListener?.("change",f)},[]);
  const stop=()=>{const a=audio.current;if(a){a.master.gain.setTargetAtTime(0,a.ctx.currentTime,.03);window.setTimeout(()=>void a.ctx.close(),100);audio.current=null}setSoundOn(false)};
  const start=async()=>{if(muted||audio.current)return;const Ctx=window.AudioContext;const ctx=new Ctx();await ctx.resume();const master=ctx.createGain();master.gain.value=.015;master.connect(ctx.destination);master.gain.linearRampToValueAtTime(Math.min(.18,volume/18*.18),ctx.currentTime+4);
@@ -42,16 +53,18 @@ export default function AutismExperience() {
  <header className="site-nav"><a className="wordmark" href="#top">星星的孩子 <span>· 认识孤独症</span></a><nav><a href="#experience">感官体验</a><a href="#families">家庭故事</a><a href="#facts">现实数据</a><a href="#quiz">认知测试</a><a href="#action">行动指南</a></nav><button className="global-mute" onClick={()=>{const v=!muted;setMuted(v);if(v)stop()}}>{muted?<VolumeX/>:<Volume2/>}{muted?"已静音":"全局静音"}</button></header>
  <main id="top">
  <section className="hero"><div className="hero-stars"/><div className="hero-copy"><p className="eyebrow">WORLD AUTISM AWARENESS</p><h1>星星的孩子<br/><em>走进孤独症的世界</em></h1><p className="hero-lead">世界孤独症日，我们常常看见孩子，却常常忽略他们背后的家庭。孤独症不是“天才病”，他们只是感知、理解和回应世界的方式有所不同。</p><p className="hero-sub">向下探索，体验感官差异，聆听家庭真实的心声。</p><button className="primary-cta" onClick={()=>go("experience")}>开启体验旅程 <ArrowDown size={17}/></button></div><div className="hero-art"><div className="orbit orbit-a"/><div className="orbit orbit-b"/><div className="moon"/><span className="star star-a">✦</span><span className="star star-b">✧</span><div className="hill hill-a"/><div className="hill hill-b"/></div><div className="hero-note">理解始于倾听 <span>01 / 05</span></div></section>
- <section className="section sensory" id="experience"><div className="section-heading"><p className="eyebrow">01 — SENSORY EXPERIENCE</p><h2>当声音变得<br/><em>无处可躲</em></h2><p>有些孤独症人士对声音更敏感。日常环境中的多种声音叠加，可能让人难以筛选、忽略或承受。</p></div><div className="sensory-panel"><div className="sensory-top"><div><span className="section-kicker">听觉模拟 · 温和演示</span><h3>{soundOn?"环境声正在播放":"先从安静开始"}</h3></div><span className={soundOn?"status-pill active":"status-pill"}>{soundOn?"体验中":"待开启"}</span></div><div className={"turntable-scene "+(soundOn&&!reduced?"playing":"")} role="img" aria-label={soundOn?"黑胶唱片正在旋转，唱针落在唱片上":"黑胶唱片与唱臂静静停留"}>
+ <section className="section sensory" id="experience"><div className="section-heading"><p className="eyebrow">01 — SENSORY EXPERIENCE</p><h2>当声音变得<br/><em>无处可躲</em></h2><p>有些孤独症人士对声音更敏感。日常环境中的多种声音叠加，可能让人难以筛选、忽略或承受。</p></div><div className="sensory-panel"><div className="sensory-top"><div><span className="section-kicker">听觉模拟 · 温和演示</span><h3>{soundOn?"环境声正在播放":"先从安静开始"}</h3></div><span className={soundOn?"status-pill active":"status-pill"}>{soundOn?"体验中":"待开启"}</span></div><div ref={turntableRef} className={"turntable-scene "+(soundOn&&!reduced?"playing ":"")+(armDragging?"arm-dragging":"")} aria-label="可交互的立体黑胶唱机">
  <div className="turntable-deck">
+  <div className="platter-shadow"/>
   <div className="vinyl-record" aria-hidden="true">
    <div className="record-grooves"/>
-   <div className="record-label"><span>星星的孩子</span><small>LISTEN WITH CARE</small><i/></div>
+   <div className="record-sheen"/>
+   <div className="record-label"><i/></div>
   </div>
   <div className="tonearm-base" aria-hidden="true"/>
-  <div className="tonearm" aria-hidden="true"><span className="tonearm-head"/><span className="stylus-tip"/></div>
-  <div className="turntable-led" aria-hidden="true"/>
-  <div className="turntable-caption"><span>33⅓ RPM</span><span>LISTEN · UNDERSTAND · RESPECT</span></div>
+  <div className={"tonearm "+(armDragging?"dragging":"")} role="slider" tabIndex={0} aria-label="拖动唱针到唱片上" aria-valuemin={-65} aria-valuemax={-15} aria-valuenow={Math.round(armAngle)} onPointerDown={handleArmDown} onPointerMove={handleArmMove} onPointerUp={()=>setArmDragging(false)} onPointerCancel={()=>setArmDragging(false)} onKeyDown={e=>{if(e.key==="ArrowLeft"||e.key==="ArrowDown")setArmAngle(a=>Math.max(-65,a-2));if(e.key==="ArrowRight"||e.key==="ArrowUp")setArmAngle(a=>Math.min(-15,a+2))}} style={{"--arm-angle":armAngle+"deg"} as React.CSSProperties}>
+   <span className="tonearm-head"/><span className="stylus-tip"/>
+  </div>
  </div>
 </div><div className="sound-controls"><button className="sound-button" disabled={muted} onClick={()=>soundOn?stop():void start()}>{soundOn?"停止模拟":"开启声音模拟"} {soundOn?<VolumeX/>:<AudioLines/>}</button><button className="quiet-button" onClick={stop}>降噪 · 立即安静</button></div><label className="volume-control">模拟音量 <input type="range" min="0" max="18" value={volume} onChange={e=>setVolume(Number(e.target.value))}/><span>{volume}%</span></label><p className="sound-warning"><ShieldAlert size={17}/> 音效为低音量合成环境声，不含尖叫或喇叭突发声。请从低音量开始；若感到不适，立即停止。全局静音始终可用。</p><p className="sensory-caption">这只是简化的声音叠加演示，不代表每位孤独症人士的真实体验。现实中的感官差异因人而异；有些孩子会捂耳、哭泣或需要离开现场，这不是“不听话”，而可能是在表达难以承受。</p></div></section>
  <section className="section family" id="families"><div className="section-heading"><p className="eyebrow">02 — VOICES OF FAMILIES</p><h2>孩子之外，<em>还有一个家庭</em></h2><p>照护者的生活也会被诊断、干预、教育与未来的不确定性深刻改变。听见他们，不是为了消费苦难，而是理解支持为何重要。</p></div><div className="story-card" onPointerDown={e=>{storyPointer.current=e.clientX}} onPointerUp={e=>{if(storyPointer.current!==null){const dx=e.clientX-storyPointer.current;if(Math.abs(dx)>55)setStoryIndex((storyIndex+(dx<0?1:4))%5);storyPointer.current=null}}}><div className="story-count">0{storyIndex+1}<span> / 05</span></div><div className="story-content"><span className="story-tag">{story[0]}</span><h3>{story[1]}</h3><blockquote>“{story[2]}”</blockquote><div className="story-source">素材线索：澎湃新闻相关家长口述报道 · 发布前需核验原文与授权</div></div><div className="story-controls"><button onClick={()=>setStoryIndex((storyIndex+4)%5)} aria-label="上一则故事"><ChevronLeft/></button><button onClick={()=>setStoryIndex((storyIndex+1)%5)} aria-label="下一则故事"><ChevronRight/></button></div></div><div className="story-dots">{stories.map((s,i)=><button key={s[1]} className={i===storyIndex?"selected":""} onClick={()=>setStoryIndex(i)} aria-label={"查看故事 "+(i+1)}/>)}</div><p className="family-footnote">孤独症家庭，除孩子之外，父母同样可能孤独、疲惫，也需要喘息、理解与长期支持。</p></section>

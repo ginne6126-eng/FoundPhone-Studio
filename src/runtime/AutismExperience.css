@@ -11,3 +11,33 @@
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 .source-link{display:inline-block;margin:10px 0 0 32px;color:#b7cce2;font-size:12px;text-decoration:none}.source-link:hover{text-decoration:underline}
+
+
+/* Vinyl turntable visual for the gentle sensory sound demonstration.
+   Audio generation and volume controls remain unchanged. */
+.turntable-scene{height:270px;margin:25px 0;border-radius:14px;overflow:hidden;position:relative;background:radial-gradient(ellipse at 48% 48%,#2b4664 0%,#203750 55%,#1a2d45 100%);display:grid;place-items:center;isolation:isolate}
+.turntable-deck{position:relative;width:100%;height:100%;background:linear-gradient(145deg,rgba(255,255,255,.035),transparent 42%),linear-gradient(325deg,rgba(5,12,22,.2),transparent 55%)}
+.turntable-deck:before{content:"";position:absolute;inset:12px;border:1px solid rgba(190,211,236,.10);border-radius:10px;pointer-events:none}
+.vinyl-record{position:absolute;left:43%;top:50%;width:clamp(178px,24vw,226px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 35% 28%,#3d4b5e 0,#202b3b 34%,#111a28 72%,#080e18 100%);box-shadow:0 14px 28px rgba(0,0,0,.36),inset 0 1px 3px rgba(255,255,255,.18),inset 0 -5px 12px rgba(0,0,0,.65);transition:filter .3s}
+.vinyl-record:before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(205,220,239,.18);box-shadow:inset 0 0 0 2px rgba(0,0,0,.2),0 0 0 1px rgba(0,0,0,.45)}
+.record-grooves{position:absolute;inset:10px;border-radius:50%;background:repeating-radial-gradient(circle at 50% 50%,rgba(181,199,221,.20) 0 1px,rgba(6,12,21,.12) 1.6px 3.1px,rgba(151,174,201,.12) 3.5px 4.1px,transparent 4.5px 6px);mask-image:radial-gradient(circle,#000 0 78%,transparent 79%);opacity:.75}
+.record-label{position:absolute;left:50%;top:50%;width:31%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#20344c;background:radial-gradient(circle at 35% 30%,#d8e4f0,#a8bfd8 72%,#829dbb);box-shadow:0 0 0 2px rgba(9,17,29,.75),inset 0 1px 4px rgba(255,255,255,.55);text-align:center}
+.record-label:before{content:"";position:absolute;inset:5px;border:1px solid rgba(36,57,80,.25);border-radius:50%}
+.record-label span{font:600 clamp(9px,1.1vw,12px) "Noto Serif SC",serif;letter-spacing:.08em;z-index:1}
+.record-label small{font:6px "DM Sans",sans-serif;letter-spacing:.12em;z-index:1;opacity:.7}
+.record-label i{position:absolute;width:5px;height:5px;border-radius:50%;background:#263b54;box-shadow:0 0 0 2px rgba(230,238,247,.6)}
+.tonearm-base{position:absolute;right:15%;top:17%;width:27px;height:27px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0e8f1,#8296ad 48%,#33465d 72%,#152338 100%);box-shadow:0 3px 8px rgba(0,0,0,.35),0 0 0 5px rgba(174,198,224,.08);z-index:4}
+.tonearm-base:after{content:"";position:absolute;width:11px;height:11px;left:8px;top:8px;border-radius:50%;background:#26384e;border:1px solid rgba(235,243,251,.45)}
+.tonearm{position:absolute;right:16.2%;top:21.4%;width:min(31%,250px);height:7px;border-radius:9px;background:linear-gradient(180deg,#e2e9f0 0%,#8498b0 38%,#3e536b 70%,#17263b 100%);box-shadow:0 2px 5px rgba(0,0,0,.42);transform-origin:94% 50%;transform:rotate(-29deg);transition:transform .85s cubic-bezier(.2,.75,.25,1);z-index:3}
+.tonearm:before{content:"";position:absolute;right:3%;top:-3px;width:19%;height:13px;border-radius:8px;background:linear-gradient(180deg,#dce5ef,#7288a2 55%,#354a62);box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.tonearm-head{position:absolute;left:-7px;top:-5px;width:31px;height:17px;border-radius:3px 8px 8px 3px;transform:rotate(-12deg);background:linear-gradient(145deg,#dce5ed,#849ab2 55%,#344a62);box-shadow:0 2px 4px rgba(0,0,0,.4)}
+.tonearm-head:after{content:"";position:absolute;left:4px;top:3px;width:14px;height:10px;border-radius:2px;background:#344b65}
+.stylus-tip{position:absolute;left:2px;top:10px;width:2px;height:11px;background:#dce7f2;transform:rotate(18deg);transform-origin:top;box-shadow:0 2px 3px rgba(0,0,0,.6)}
+.turntable-led{position:absolute;left:8%;bottom:17%;width:6px;height:6px;border-radius:50%;background:#9bb8d9;box-shadow:0 0 9px rgba(169,196,225,.55);opacity:.65}
+.turntable-caption{position:absolute;left:8%;right:7%;bottom:13px;display:flex;justify-content:space-between;align-items:center;color:#91a9c5;font:9px "DM Sans",sans-serif;letter-spacing:.16em;opacity:.8}
+.turntable-scene.playing .vinyl-record{animation:vinyl-spin 3.2s linear infinite;filter:brightness(1.08)}
+.turntable-scene.playing .tonearm{transform:rotate(-38deg)}
+.turntable-scene.playing .turntable-led{background:#d6e7f7;box-shadow:0 0 12px rgba(190,216,241,.9);opacity:1}
+@keyframes vinyl-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@media(max-width:520px){.turntable-scene{height:220px}.vinyl-record{left:39%;width:178px}.tonearm{right:11%;top:21%;width:34%;transform:rotate(-29deg)}.turntable-scene.playing .tonearm{transform:rotate(-39deg)}.turntable-caption{font-size:7px;letter-spacing:.1em;bottom:10px}}
+@media(prefers-reduced-motion:reduce){.turntable-scene.playing .vinyl-record{animation:none}.tonearm{transition:none}}

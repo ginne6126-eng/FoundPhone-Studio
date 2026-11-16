@@ -47,7 +47,9 @@ export default function AutismExperience() {
  const n=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();n.buffer=b;n.loop=true;f.type="lowpass";f.frequency.value=520;g.gain.value=.1;n.connect(f);f.connect(g);g.connect(master);n.start();audio.current={ctx,master};setSoundOn(true)};
  useEffect(()=>{if(audio.current)audio.current.master.gain.setTargetAtTime(muted?0:Math.min(.18,volume/18*.18),audio.current.ctx.currentTime,.06)},[muted,volume]);
  useEffect(()=>()=>{if(audio.current)void audio.current.ctx.close()},[]);
- const needleOnRecord=armAngle>=-23&&armAngle<=-8;\n useEffect(()=>{if(needleOnRecord&&!muted){if(!audio.current)void start()}else if(audio.current){stop()}},[needleOnRecord,muted]);\n const go=(id:string)=>document.getElementById(id)?.scrollIntoView({behavior:reduced?"auto":"smooth"});
+ const needleOnRecord=armAngle>=-23&&armAngle<=-8;
+ useEffect(()=>{if(needleOnRecord&&!muted){if(!audio.current)void start()}else if(audio.current){stop()}},[needleOnRecord,muted]);
+ const go=(id:string)=>document.getElementById(id)?.scrollIntoView({behavior:reduced?"auto":"smooth"});
  const story=stories[storyIndex],done=Object.keys(answers).length;
  return <div className="autism-site">
  <header className="site-nav"><a className="wordmark" href="#top">星星的孩子 <span>· 认识孤独症</span></a><nav><a href="#experience">感官体验</a><a href="#families">家庭故事</a><a href="#facts">现实数据</a><a href="#quiz">认知测试</a><a href="#action">行动指南</a></nav><button className="global-mute" onClick={()=>{const v=!muted;setMuted(v);if(v)stop()}}>{muted?<VolumeX/>:<Volume2/>}{muted?"已静音":"全局静音"}</button></header>

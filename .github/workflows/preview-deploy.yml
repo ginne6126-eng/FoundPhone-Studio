@@ -27,8 +27,7 @@ jobs:
       - name: Build complete website and native 3D experience
         run: npm run build
       - name: Deploy isolated preview Worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --name foundphone-studio-autism-preview
+        run: npx --yes wrangler@4 deploy --config wrangler.jsonc --name foundphone-studio-autism-preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

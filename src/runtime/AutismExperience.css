@@ -42,3 +42,9 @@
 @keyframes vinyl-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 @media(max-width:620px){.turntable-scene{height:300px;padding:12px}.platter-shadow{left:41%;width:clamp(220px,66vw,300px)}.vinyl-record{left:41%;width:clamp(205px,62vw,280px)}.tonearm-base{right:10%;top:16%;width:35px;height:35px}.tonearm-base:after{left:10px;top:10px;width:15px;height:15px}.tonearm{right:11%;top:18%;width:44%;height:10px}.tonearm-head{width:35px;height:23px}.stylus-tip{top:14px;height:12px}}
 @media(prefers-reduced-motion:reduce){.turntable-scene.playing .vinyl-record{animation:none}.tonearm{transition:none}}
+
+/* Refine platter proportions to echo the full-size reference turntable. */
+.platter-shadow{width:clamp(280px,49vw,520px)}
+.vinyl-record{width:clamp(260px,46vw,490px)}
+.turntable-scene.needle-contact .vinyl-record{box-shadow:0 8px 13px rgba(0,0,0,.65),0 2px 0 #080c12,0 0 0 2px rgba(174,205,235,.18),inset 0 1px 2px rgba(255,255,255,.38),inset 0 -9px 18px rgba(0,0,0,.85)}
+@media(max-width:620px){.platter-shadow{width:clamp(235px,72vw,350px)}.vinyl-record{width:clamp(220px,68vw,330px)}}

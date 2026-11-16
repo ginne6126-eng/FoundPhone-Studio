@@ -57,7 +57,19 @@ export default function AutismExperience() {
  return <div className="autism-site">
  <header className="site-nav"><a className="wordmark" href="#top">星星的孩子 <span>· 认识孤独症</span></a><nav><a href="#experience">感官体验</a><a href="#families">家庭故事</a><a href="#facts">现实数据</a><a href="#quiz">认知测试</a><a href="#action">行动指南</a></nav><button className="global-mute" onClick={()=>{const v=!muted;setMuted(v);if(v)stop()}}>{muted?<VolumeX/>:<Volume2/>}{muted?"已静音":"全局静音"}</button></header>
  <main id="top">
- <section className="hero"><div className="hero-stars"/><div className="hero-copy"><p className="eyebrow">WORLD AUTISM AWARENESS</p><h1>星星的孩子<br/><em>走进孤独症的世界</em></h1><p className="hero-lead">世界孤独症日，我们常常看见孩子，却常常忽略他们背后的家庭。孤独症不是“天才病”，他们只是感知、理解和回应世界的方式有所不同。</p><p className="hero-sub">向下探索，体验感官差异，聆听家庭真实的心声。</p><button className="primary-cta" onClick={()=>go("experience")}>开启体验旅程 <ArrowDown size={17}/></button></div><div className="hero-art"><div className="orbit orbit-a"/><div className="orbit orbit-b"/><div className="moon"/><span className="star star-a">✦</span><span className="star star-b">✧</span><div className="hill hill-a"/><div className="hill hill-b"/></div><div className="hero-note">理解始于倾听 <span>01 / 05</span></div></section>
+ <section className="immersive-intro" id="top" aria-label="沉浸式序章">
+ <iframe className="immersive-world" src="https://false-earth.mingjyunhung.com/" title="False Earth 互动式自然景观体验" allow="fullscreen; webgpu" allowFullScreen loading="eager" referrerPolicy="strict-origin-when-cross-origin"/>
+ <div className="immersive-shade" aria-hidden="true"/>
+ <div className="immersive-copy">
+  <p className="eyebrow">A DIFFERENT WAY TO FEEL THE WORLD</p>
+  <h1>我们生活在同一个世界里，<br/><em>却不一定拥有相同的感受。</em></h1>
+  <p>先停留片刻，感受这个世界。再一起走近那些不同的感知方式。</p>
+  <button className="primary-cta" onClick={()=>go("experience")}>继续探索 <ArrowDown size={17}/></button>
+  <div className="immersive-credit">沉浸式场景原作：Ming Jyun Hung · <a href="https://false-earth.mingjyunhung.com/" target="_blank" rel="noreferrer">在新窗口打开体验 ↗</a></div>
+ </div>
+ <button className="immersive-skip" onClick={()=>go("experience")}>跳过开场 <ArrowDown size={14}/></button>
+ <span className="immersive-hint">可用鼠标探索 · 无需开启声音</span>
+</section>
  <section className="section sensory" id="experience"><div className="section-heading"><p className="eyebrow">01 — SENSORY EXPERIENCE</p><h2>当声音变得<br/><em>无处可躲</em></h2><p>有些孤独症人士对声音更敏感。日常环境中的多种声音叠加，可能让人难以筛选、忽略或承受。</p></div><div className="sensory-panel"><div className="sensory-top"><div><span className="section-kicker">听觉模拟 · 温和演示</span><h3>{soundOn?"环境声正在播放":"先从安静开始"}</h3></div><span className={soundOn?"status-pill active":"status-pill"}>{soundOn?"体验中":"待开启"}</span></div><div ref={turntableRef} className={"turntable-scene "+(soundOn&&!reduced?"playing ":"")+(needleOnRecord?" needle-contact ":"")+(armDragging?"arm-dragging":"")} aria-label="可交互的立体黑胶唱机">
  <div className="turntable-deck">
   <div className="platter-shadow"/>

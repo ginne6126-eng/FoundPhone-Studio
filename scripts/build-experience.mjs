@@ -1,4 +1,4 @@
-import { access, constants, readFile, writeFile } from "node:fs/promises";
+import { access, constants, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 const root=process.cwd(), source=resolve(root,"experience/false-earth");
@@ -35,4 +35,19 @@ if(app.includes("KTX2Preloader")||app.includes("MODEL_PATHS")||app.includes("use
 await writeFile(appPath,app);
 run("npm",["install","--no-audit","--no-fund"],source);
 run("npm",["run","build","--","--base=./","--outDir=../../dist/experience","--emptyOutDir"],source);
-console.log("3D experience built to dist/experience.");
+const output=resolve(root,"dist/experience");
+// The procedural child character replaces the licensed astronaut model and its animation set.
+// Do not ship those unused assets in the public experience bundle.
+await Promise.all([
+  rm(resolve(output,"models"),{recursive:true,force:true}),
+  rm(resolve(output,"textures/Body"),{recursive:true,force:true}),
+  rm(resolve(output,"textures/Details"),{recursive:true,force:true}),
+]);
+const assetDir=resolve(output,"assets");
+for(const name of await readdir(assetDir)){
+  if(name.endsWith(".map"))await rm(resolve(assetDir,name),{force:true});
+}
+if(!(await exists(resolve(output,"index.html"))))throw new Error("3D experience entry file missing after build.");
+const remainingModels=await exists(resolve(output,"models"));
+if(remainingModels)throw new Error("Unused astronaut model assets remain in the public bundle.");
+console.log("3D experience built to dist/experience; unused astronaut assets and source maps removed.");

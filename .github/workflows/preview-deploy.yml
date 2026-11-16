@@ -1,0 +1,34 @@
+name: Deploy isolated autism-awareness preview
+on:
+  push:
+    branches:
+      - feature/autism-awareness-site
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: autism-awareness-preview
+  cancel-in-progress: true
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out feature branch and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build complete website and native 3D experience
+        run: npm run build
+      - name: Deploy isolated preview Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --name foundphone-studio-autism-preview

@@ -1,4 +1,4 @@
-import { access, constants, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { access, constants, cp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 const root=process.cwd(), source=resolve(root,"experience/false-earth");
@@ -55,6 +55,14 @@ await Promise.all([
   rm(resolve(output,"textures/Body"),{recursive:true,force:true}),
   rm(resolve(output,"textures/Details"),{recursive:true,force:true}),
 ]);
+// False Earth references public media with origin-root URLs such as /textures/... and /audio/...
+// The experience is hosted under /experience/, so mirror its public folders at the Worker root.
+for (const folder of ["audio", "textures"]) {
+  const sourceDir = resolve(output, folder);
+  if (await exists(sourceDir)) {
+    await cp(sourceDir, resolve(root, "dist", folder), { recursive: true, force: true });
+  }
+}
 const assetDir=resolve(output,"assets");
 for(const name of await readdir(assetDir)){
   if(name.endsWith(".map"))await rm(resolve(assetDir,name),{force:true});

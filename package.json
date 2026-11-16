@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "npm run story:build && vite --config vite.runtime.config.ts --host 127.0.0.1",
-    "build": "npm run story:build && tsc -b && vite build --config vite.runtime.config.ts && node scripts/package-runtime.mjs",
+    "build": "npm run story:build && tsc -b && vite build --config vite.runtime.config.ts && node scripts/package-runtime.mjs && npm run experience:build",
     "typecheck": "tsc -b",
     "test": "vitest run",
     "lint": "eslint src",

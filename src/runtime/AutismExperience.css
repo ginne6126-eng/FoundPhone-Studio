@@ -13,31 +13,32 @@
 .source-link{display:inline-block;margin:10px 0 0 32px;color:#b7cce2;font-size:12px;text-decoration:none}.source-link:hover{text-decoration:underline}
 
 
-/* Vinyl turntable visual for the gentle sensory sound demonstration.
-   Audio generation and volume controls remain unchanged. */
-.turntable-scene{height:270px;margin:25px 0;border-radius:14px;overflow:hidden;position:relative;background:radial-gradient(ellipse at 48% 48%,#2b4664 0%,#203750 55%,#1a2d45 100%);display:grid;place-items:center;isolation:isolate}
-.turntable-deck{position:relative;width:100%;height:100%;background:linear-gradient(145deg,rgba(255,255,255,.035),transparent 42%),linear-gradient(325deg,rgba(5,12,22,.2),transparent 55%)}
-.turntable-deck:before{content:"";position:absolute;inset:12px;border:1px solid rgba(190,211,236,.10);border-radius:10px;pointer-events:none}
-.vinyl-record{position:absolute;left:43%;top:50%;width:clamp(178px,24vw,226px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 35% 28%,#3d4b5e 0,#202b3b 34%,#111a28 72%,#080e18 100%);box-shadow:0 14px 28px rgba(0,0,0,.36),inset 0 1px 3px rgba(255,255,255,.18),inset 0 -5px 12px rgba(0,0,0,.65);transition:filter .3s}
-.vinyl-record:before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(205,220,239,.18);box-shadow:inset 0 0 0 2px rgba(0,0,0,.2),0 0 0 1px rgba(0,0,0,.45)}
-.record-grooves{position:absolute;inset:10px;border-radius:50%;background:repeating-radial-gradient(circle at 50% 50%,rgba(181,199,221,.20) 0 1px,rgba(6,12,21,.12) 1.6px 3.1px,rgba(151,174,201,.12) 3.5px 4.1px,transparent 4.5px 6px);mask-image:radial-gradient(circle,#000 0 78%,transparent 79%);opacity:.75}
-.record-label{position:absolute;left:50%;top:50%;width:31%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#20344c;background:radial-gradient(circle at 35% 30%,#d8e4f0,#a8bfd8 72%,#829dbb);box-shadow:0 0 0 2px rgba(9,17,29,.75),inset 0 1px 4px rgba(255,255,255,.55);text-align:center}
-.record-label:before{content:"";position:absolute;inset:5px;border:1px solid rgba(36,57,80,.25);border-radius:50%}
-.record-label span{font:600 clamp(9px,1.1vw,12px) "Noto Serif SC",serif;letter-spacing:.08em;z-index:1}
-.record-label small{font:6px "DM Sans",sans-serif;letter-spacing:.12em;z-index:1;opacity:.7}
-.record-label i{position:absolute;width:5px;height:5px;border-radius:50%;background:#263b54;box-shadow:0 0 0 2px rgba(230,238,247,.6)}
-.tonearm-base{position:absolute;right:15%;top:17%;width:27px;height:27px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0e8f1,#8296ad 48%,#33465d 72%,#152338 100%);box-shadow:0 3px 8px rgba(0,0,0,.35),0 0 0 5px rgba(174,198,224,.08);z-index:4}
-.tonearm-base:after{content:"";position:absolute;width:11px;height:11px;left:8px;top:8px;border-radius:50%;background:#26384e;border:1px solid rgba(235,243,251,.45)}
-.tonearm{position:absolute;right:16.2%;top:21.4%;width:min(31%,250px);height:7px;border-radius:9px;background:linear-gradient(180deg,#e2e9f0 0%,#8498b0 38%,#3e536b 70%,#17263b 100%);box-shadow:0 2px 5px rgba(0,0,0,.42);transform-origin:94% 50%;transform:rotate(-29deg);transition:transform .85s cubic-bezier(.2,.75,.25,1);z-index:3}
-.tonearm:before{content:"";position:absolute;right:3%;top:-3px;width:19%;height:13px;border-radius:8px;background:linear-gradient(180deg,#dce5ef,#7288a2 55%,#354a62);box-shadow:0 1px 3px rgba(0,0,0,.35)}
-.tonearm-head{position:absolute;left:-7px;top:-5px;width:31px;height:17px;border-radius:3px 8px 8px 3px;transform:rotate(-12deg);background:linear-gradient(145deg,#dce5ed,#849ab2 55%,#344a62);box-shadow:0 2px 4px rgba(0,0,0,.4)}
-.tonearm-head:after{content:"";position:absolute;left:4px;top:3px;width:14px;height:10px;border-radius:2px;background:#344b65}
-.stylus-tip{position:absolute;left:2px;top:10px;width:2px;height:11px;background:#dce7f2;transform:rotate(18deg);transform-origin:top;box-shadow:0 2px 3px rgba(0,0,0,.6)}
-.turntable-led{position:absolute;left:8%;bottom:17%;width:6px;height:6px;border-radius:50%;background:#9bb8d9;box-shadow:0 0 9px rgba(169,196,225,.55);opacity:.65}
-.turntable-caption{position:absolute;left:8%;right:7%;bottom:13px;display:flex;justify-content:space-between;align-items:center;color:#91a9c5;font:9px "DM Sans",sans-serif;letter-spacing:.16em;opacity:.8}
-.turntable-scene.playing .vinyl-record{animation:vinyl-spin 3.2s linear infinite;filter:brightness(1.08)}
-.turntable-scene.playing .tonearm{transform:rotate(-38deg)}
-.turntable-scene.playing .turntable-led{background:#d6e7f7;box-shadow:0 0 12px rgba(190,216,241,.9);opacity:1}
+/* Premium 3D turntable — the tonearm is directly touch/mouse draggable. */
+.turntable-scene{height:390px;margin:26px 0 30px;padding:18px;border-radius:18px;position:relative;overflow:hidden;display:grid;place-items:center;background:radial-gradient(ellipse at 42% 46%,#314b68 0%,#203750 58%,#17283e 100%);isolation:isolate}
+.turntable-deck{position:relative;width:100%;height:100%;border-radius:16px;background:linear-gradient(145deg,#7d8289 0%,#555b65 23%,#353d49 56%,#202a38 100%);box-shadow:0 20px 25px rgba(0,0,0,.4),0 4px 0 #111a26,inset 0 2px 2px rgba(255,255,255,.42),inset 0 -5px 10px rgba(0,0,0,.5);border:1px solid rgba(220,231,244,.28)}
+.turntable-deck:before{content:"";position:absolute;inset:9px;border-radius:11px;border:1px solid rgba(235,242,250,.16);box-shadow:inset 0 0 20px rgba(0,0,0,.15);pointer-events:none}
+.turntable-deck:after{content:"";position:absolute;left:1%;right:1%;bottom:-7px;height:9px;border-radius:0 0 14px 14px;background:linear-gradient(90deg,#111a25,#3a424e 30%,#161f2c 75%,#0b121c);filter:blur(.2px);z-index:-1}
+.platter-shadow{position:absolute;left:42%;top:51%;width:clamp(250px,43vw,370px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(145deg,#0b111b,#303844 46%,#101722);box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #080d14,inset 0 2px 5px rgba(255,255,255,.16)}
+.platter-shadow:before{content:"";position:absolute;inset:5px;border-radius:50%;border:2px solid rgba(210,220,232,.5);box-shadow:inset 0 0 0 3px rgba(0,0,0,.32),0 0 0 1px rgba(255,255,255,.12)}
+.vinyl-record{position:absolute;left:42%;top:49%;width:clamp(235px,40vw,350px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 34% 25%,#555c65 0%,#252d38 28%,#101722 62%,#080d14 100%);box-shadow:0 8px 13px rgba(0,0,0,.65),0 2px 0 #080c12,inset 0 1px 2px rgba(255,255,255,.38),inset 0 -9px 18px rgba(0,0,0,.85);transition:filter .35s}
+.vinyl-record:before{content:"";position:absolute;inset:4px;border-radius:50%;border:1px solid rgba(235,241,248,.36);box-shadow:inset 0 0 0 2px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.8)}
+.record-grooves{position:absolute;inset:9px;border-radius:50%;background:repeating-radial-gradient(circle at 50% 50%,rgba(222,230,239,.22) 0 1px,rgba(0,0,0,.22) 1.5px 2.8px,rgba(161,177,195,.14) 3px 3.6px,rgba(0,0,0,.18) 4px 5.3px);mask-image:radial-gradient(circle,#000 0 81%,transparent 82%);opacity:.82}
+.record-sheen{position:absolute;inset:8px;border-radius:50%;background:conic-gradient(from 10deg,transparent 0 7%,rgba(211,225,239,.13) 9%,transparent 14% 31%,rgba(179,204,228,.12) 35%,transparent 41% 65%,rgba(230,238,247,.12) 69%,transparent 76%);mix-blend-mode:screen;opacity:.65;pointer-events:none}
+.record-label{position:absolute;left:50%;top:50%;width:27%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 35% 28%,#d9dde1 0%,#8c939b 42%,#343b45 75%,#171e29 100%);box-shadow:0 0 0 3px rgba(7,12,19,.92),0 0 0 4px rgba(220,231,242,.4),inset 0 2px 4px rgba(255,255,255,.55),inset 0 -4px 7px rgba(0,0,0,.6)}
+.record-label:before{content:"";position:absolute;inset:7px;border:1px solid rgba(240,245,250,.28);border-radius:50%}
+.record-label i{position:absolute;left:50%;top:50%;width:7px;height:7px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#7c8794 65%,#1a2430);box-shadow:0 0 0 2px rgba(10,16,24,.8)}
+.tonearm-base{position:absolute;right:15%;top:17%;width:43px;height:43px;border-radius:50%;background:radial-gradient(circle at 34% 28%,#f1f4f7 0%,#aab4c0 18%,#5d6876 42%,#252f3c 68%,#101722 100%);box-shadow:0 5px 9px rgba(0,0,0,.55),0 0 0 5px rgba(10,16,24,.32),inset 0 1px 2px rgba(255,255,255,.7);z-index:5}
+.tonearm-base:after{content:"";position:absolute;left:13px;top:13px;width:17px;height:17px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e6ebf0,#657384 65%,#1a2533);border:1px solid rgba(255,255,255,.35);box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
+.tonearm{position:absolute;right:16%;top:19%;width:42%;height:13px;border:0;border-radius:12px;background:linear-gradient(180deg,#f1f4f7 0%,#c0c9d3 19%,#667485 45%,#273343 72%,#111a27 100%);box-shadow:0 5px 8px rgba(0,0,0,.65),0 1px 1px rgba(255,255,255,.65) inset;transform-origin:94% 50%;transform:rotate(var(--arm-angle,-48deg));transition:filter .2s;z-index:4;cursor:grab;touch-action:none;outline:none}
+.tonearm:before{content:"";position:absolute;right:3%;top:-5px;width:23%;height:23px;border-radius:7px;background:linear-gradient(180deg,#e8edf2,#8996a5 45%,#364354 78%,#172231);box-shadow:0 3px 5px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.75)}
+.tonearm:after{content:"";position:absolute;right:9%;top:2px;width:9%;height:8px;border-radius:5px;background:linear-gradient(90deg,#283544,#c1cbd6,#344354)}
+.tonearm.dragging,.tonearm:active{cursor:grabbing;filter:brightness(1.18)}
+.tonearm-head{position:absolute;left:-11px;top:-7px;width:42px;height:27px;border-radius:5px 9px 9px 5px;transform:rotate(-13deg);background:linear-gradient(145deg,#f0f3f6 0%,#9ba8b7 35%,#465466 72%,#1a2533 100%);box-shadow:0 4px 6px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.8)}
+.tonearm-head:before{content:"";position:absolute;left:7px;top:5px;width:22px;height:13px;border-radius:3px;background:linear-gradient(145deg,#596879,#1b2735);box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
+.tonearm-head:after{content:"";position:absolute;right:4px;bottom:3px;width:5px;height:5px;border-radius:50%;background:#e3e9ef;box-shadow:0 0 3px rgba(255,255,255,.8)}
+.stylus-tip{position:absolute;left:1px;top:17px;width:2px;height:15px;background:linear-gradient(90deg,#505d6b,#f0f4f8,#596779);transform:rotate(18deg);transform-origin:top;box-shadow:0 3px 3px rgba(0,0,0,.7)}
+.turntable-scene.playing .vinyl-record{animation:vinyl-spin 3.2s linear infinite;filter:brightness(1.12)}
+.turntable-scene.playing .tonearm{filter:brightness(1.05)}
 @keyframes vinyl-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
-@media(max-width:520px){.turntable-scene{height:220px}.vinyl-record{left:39%;width:178px}.tonearm{right:11%;top:21%;width:34%;transform:rotate(-29deg)}.turntable-scene.playing .tonearm{transform:rotate(-39deg)}.turntable-caption{font-size:7px;letter-spacing:.1em;bottom:10px}}
+@media(max-width:620px){.turntable-scene{height:300px;padding:12px}.platter-shadow{left:41%;width:clamp(220px,66vw,300px)}.vinyl-record{left:41%;width:clamp(205px,62vw,280px)}.tonearm-base{right:10%;top:16%;width:35px;height:35px}.tonearm-base:after{left:10px;top:10px;width:15px;height:15px}.tonearm{right:11%;top:18%;width:44%;height:10px}.tonearm-head{width:35px;height:23px}.stylus-tip{top:14px;height:12px}}
 @media(prefers-reduced-motion:reduce){.turntable-scene.playing .vinyl-record{animation:none}.tonearm{transition:none}}

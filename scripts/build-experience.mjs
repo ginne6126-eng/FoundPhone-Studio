@@ -29,6 +29,12 @@ if(!ui.includes(loadingAnchor))throw new Error("False Earth UI insertion point m
 ui=ui.replace(loadingAnchor,loadingAnchor+String.raw`
             <a href="../?chapters=1" style={{position:"fixed",left:18,top:18,zIndex:60,pointerEvents:"auto",padding:"9px 14px",border:"1px solid rgba(255,255,255,.32)",borderRadius:24,color:"#eef3f8",background:"rgba(5,12,20,.38)",backdropFilter:"blur(12px)",fontSize:12,textDecoration:"none",letterSpacing:".08em"}}>探索手册 ↗</a>`);
 await writeFile(uiPath,ui);
+const cameraPath=resolve(source,"src/components/camera/CameraViewControl.tsx");
+let camera=await readFile(cameraPath,"utf8");
+const originalCameraTiming="smoothTime={isControlEnabled ? 0.1 : 1}";
+if(!camera.includes(originalCameraTiming))throw new Error("Initial camera transition setting changed; review before patching.");
+camera=camera.replace(originalCameraTiming,"smoothTime={isControlEnabled ? 0.12 : 3.2}");
+await writeFile(cameraPath,camera);
 const appPath=resolve(source,"src/app/App.tsx");
 let app=await readFile(appPath,"utf8");
 app=app.replace('import { Environment, PerformanceMonitor, useGLTF } from "@react-three/drei";','import { Environment, PerformanceMonitor } from "@react-three/drei";')

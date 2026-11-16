@@ -10,8 +10,8 @@ await writeFile(resolve(source,"src/components/character/Character.tsx"),await r
 const loadingPath=resolve(source,"src/ui/LoadingScreen.tsx");
 let loading=await readFile(loadingPath,"utf8");
 loading=loading.replace("FALSE EARTH","星星的孩子")
-.replace(/<p>\s*After drifting beyond the edge of space,[\\s\\S]*?<\\/p>/,"<p>我们生活在同一个世界里，却不一定拥有相同的感受。这里是一颗陌生的星球。你可以按照自己的节奏，慢慢开始探索。</p>")
-.replace(/<p>\s*With each step, something descends[\\s\\S]*?<\\/p>/,"<p>不需要完成任务，也没有正确路线。停下来、转身或继续向前，都由你决定。</p>")
+.replace(/<p>\s*After drifting beyond the edge of space,[\s\S]*?<\/p>/,"<p>我们生活在同一个世界里，却不一定拥有相同的感受。这里是一颗陌生的星球。你可以按照自己的节奏，慢慢开始探索。</p>")
+.replace(/<p>\s*With each step, something descends[\s\S]*?<\/p>/,"<p>不需要完成任务，也没有正确路线。停下来、转身或继续向前，都由你决定。</p>")
 .replace("[ START ]","进入陌生星球")
 .replace('label="MOVE"','label="移动"').replace('label="RUN"','label="奔跑"').replace('label="CAM"','label="镜头"').replace('label="LOOK"','label="观察"')
 .replace("SYSTEM INCOMPATIBLE","当前浏览器暂不支持此体验");

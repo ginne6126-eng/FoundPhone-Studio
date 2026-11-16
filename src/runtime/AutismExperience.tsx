@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type CSSProperties } from "react";
 import { Volume2, VolumeX, ChevronLeft, ChevronRight, ArrowDown, ShieldAlert, HeartHandshake, BookOpen, AudioLines, CheckCircle2, XCircle, Info, Globe2, Activity, GraduationCap } from "lucide-react";
 import "./AutismExperience.css";
 
@@ -26,7 +26,7 @@ export default function AutismExperience() {
  const [soundOn,setSoundOn]=useState(false),[muted,setMuted]=useState(false),[volume,setVolume]=useState(18);
  const [storyIndex,setStoryIndex]=useState(0),[answers,setAnswers]=useState<Record<number,number>>({}),[expanded,setExpanded]=useState<number|null>(null);
  const [reduced,setReduced]=useState(false);
- const [armAngle,setArmAngle]=useState(-29),[armDragging,setArmDragging]=useState(false);
+ const [armAngle,setArmAngle]=useState(-48),[armDragging,setArmDragging]=useState(false);
  const turntableRef=useRef<HTMLDivElement|null>(null);
  const audio=useRef<{ctx:AudioContext;master:GainNode}|null>(null),storyPointer=useRef<number|null>(null);
  const moveTonearm=(clientX:number,clientY:number)=>{
@@ -36,7 +36,7 @@ export default function AutismExperience() {
   const angle=Math.max(-65,Math.min(-15,pointerAngle-180));
   setArmAngle(angle);
  };
- const handleArmDown=(e:React.PointerEvent<HTMLDivElement>)=>{e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);setArmDragging(true);moveTonearm(e.clientX,e.clientY)};
+ const handleArmDown=(e:ReactPointerEvent<HTMLDivElement>)=>{e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);setArmDragging(true);moveTonearm(e.clientX,e.clientY)};
  const handleArmMove=(e:React.PointerEvent<HTMLDivElement>)=>{if(armDragging)moveTonearm(e.clientX,e.clientY)};
  useEffect(()=>{const m=window.matchMedia("(prefers-reduced-motion: reduce)");const f=()=>setReduced(m.matches);f();m.addEventListener?.("change",f);return()=>m.removeEventListener?.("change",f)},[]);
  const stop=()=>{const a=audio.current;if(a){a.master.gain.setTargetAtTime(0,a.ctx.currentTime,.03);window.setTimeout(()=>void a.ctx.close(),100);audio.current=null}setSoundOn(false)};
@@ -62,7 +62,7 @@ export default function AutismExperience() {
    <div className="record-label"><i/></div>
   </div>
   <div className="tonearm-base" aria-hidden="true"/>
-  <div className={"tonearm "+(armDragging?"dragging":"")} role="slider" tabIndex={0} aria-label="拖动唱针到唱片上" aria-valuemin={-65} aria-valuemax={-15} aria-valuenow={Math.round(armAngle)} onPointerDown={handleArmDown} onPointerMove={handleArmMove} onPointerUp={()=>setArmDragging(false)} onPointerCancel={()=>setArmDragging(false)} onKeyDown={e=>{if(e.key==="ArrowLeft"||e.key==="ArrowDown")setArmAngle(a=>Math.max(-65,a-2));if(e.key==="ArrowRight"||e.key==="ArrowUp")setArmAngle(a=>Math.min(-15,a+2))}} style={{"--arm-angle":armAngle+"deg"} as React.CSSProperties}>
+  <div className={"tonearm "+(armDragging?"dragging":"")} role="slider" tabIndex={0} aria-label="拖动唱针到唱片上" aria-valuemin={-65} aria-valuemax={-15} aria-valuenow={Math.round(armAngle)} onPointerDown={handleArmDown} onPointerMove={handleArmMove} onPointerUp={()=>setArmDragging(false)} onPointerCancel={()=>setArmDragging(false)} onKeyDown={e=>{if(e.key==="ArrowLeft"||e.key==="ArrowDown")setArmAngle(a=>Math.max(-65,a-2));if(e.key==="ArrowRight"||e.key==="ArrowUp")setArmAngle(a=>Math.min(-15,a+2))}} style={{"--arm-angle":armAngle+"deg"} as CSSProperties}>
    <span className="tonearm-head"/><span className="stylus-tip"/>
   </div>
  </div>

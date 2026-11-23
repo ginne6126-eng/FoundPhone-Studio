@@ -66,6 +66,38 @@ const diagnosticEffect = String.raw`    useEffect(() => {
 `;
 if (!app.includes("    const [dpr, setDpr] = useState(1.5);")) throw new Error("App diagnostic insertion point missing.");
 app = app.replace("    const [dpr, setDpr] = useState(1.5);", "    const [dpr, setDpr] = useState(1.5);\n" + diagnosticState + "\n" + diagnosticEffect);
+const gpuGateState = "    const [gpuCheckComplete, setGpuCheckComplete] = useState(false);";
+app = app.replace("    const [dpr, setDpr] = useState(1.5);", "    const [dpr, setDpr] = useState(1.5);\\n" + gpuGateState + "\\n" + diagnosticState + "\\n" + diagnosticEffect);
+const gpuGateEffect = String.raw`    useEffect(() => {
+        let cancelled = false;
+        const checkWebGPU = async () => {
+            try {
+                if (!navigator.gpu) throw new Error("当前浏览器未提供 WebGPU");
+                const adapter = await navigator.gpu.requestAdapter();
+                if (!adapter) throw new Error("没有可用的 WebGPU 图形设备");
+                if (typeof adapter.requestDevice === "function") {
+                    const device = await adapter.requestDevice();
+                    device.destroy?.();
+                }
+                if (!cancelled) setGpuError(null);
+            } catch (error) {
+                if (!cancelled) setGpuError(error instanceof Error ? error.message : String(error));
+            } finally {
+                if (!cancelled) setGpuCheckComplete(true);
+            }
+        };
+        void checkWebGPU();
+        return () => { cancelled = true; };
+    }, [setGpuError]);
+`;
+const oldCheckStart = "    // Check WebGPU support on mount";
+const oldCheckEnd = "    useShortcut('c', () => {";
+const checkStart = app.indexOf(oldCheckStart);
+const checkEnd = app.indexOf(oldCheckEnd, checkStart);
+if (checkStart < 0 || checkEnd < 0) throw new Error("Original WebGPU check block not found");
+app = app.slice(0, checkStart) + gpuGateEffect + "\\n" + app.slice(checkEnd);
+app = app.replace("{!gpuError && (", "{gpuCheckComplete && !gpuError && (");
+
 const uiAnchor = "        <UI />";
 if (!app.includes(uiAnchor)) throw new Error("App UI diagnostic insertion point missing.");
 const diagnosticOverlay = String.raw`

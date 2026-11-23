@@ -65,9 +65,8 @@ const diagnosticEffect = String.raw`    useEffect(() => {
     }, []);
 `;
 if (!app.includes("    const [dpr, setDpr] = useState(1.5);")) throw new Error("App diagnostic insertion point missing.");
-app = app.replace("    const [dpr, setDpr] = useState(1.5);", "    const [dpr, setDpr] = useState(1.5);\n" + diagnosticState + "\n" + diagnosticEffect);
 const gpuGateState = "    const [gpuCheckComplete, setGpuCheckComplete] = useState(false);";
-app = app.replace("    const [dpr, setDpr] = useState(1.5);", "    const [dpr, setDpr] = useState(1.5);\\n" + gpuGateState + "\\n" + diagnosticState + "\\n" + diagnosticEffect);
+app = app.replace("    const [dpr, setDpr] = useState(1.5);", "    const [dpr, setDpr] = useState(1.5);\n" + gpuGateState + "\n" + diagnosticState + "\n" + diagnosticEffect);
 const gpuGateEffect = String.raw`    useEffect(() => {
         let cancelled = false;
         const checkWebGPU = async () => {
@@ -95,7 +94,7 @@ const oldCheckEnd = "    useShortcut('c', () => {";
 const checkStart = app.indexOf(oldCheckStart);
 const checkEnd = app.indexOf(oldCheckEnd, checkStart);
 if (checkStart < 0 || checkEnd < 0) throw new Error("Original WebGPU check block not found");
-app = app.slice(0, checkStart) + gpuGateEffect + "\\n" + app.slice(checkEnd);
+app = app.slice(0, checkStart) + gpuGateEffect + "\n" + app.slice(checkEnd);
 app = app.replace("{!gpuError && (", "{gpuCheckComplete && !gpuError && (");
 
 const uiAnchor = "        <UI />";

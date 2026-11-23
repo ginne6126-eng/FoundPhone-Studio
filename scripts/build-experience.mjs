@@ -16,7 +16,7 @@ loading=loading.replace("FALSE EARTH","星星的孩子")
 .replace('label="MOVE"','label="移动"').replace('label="RUN"','label="奔跑"').replace('label="CAM"','label="镜头"').replace('label="LOOK"','label="观察"')
 .replace("SYSTEM INCOMPATIBLE","当前浏览器暂不支持 3D 场景");
 loading=loading.replace("ERROR CODE: {gpuError}","当前设备或浏览器没有可用的 WebGPU 图形设备。你仍可进入图文科普版本，继续浏览全部内容。");
-loading=loading.replace("                        </button>\n\n                        <div style={{","                        </button>\n                        {gpuError && <a href=\"../?chapters=1\" style={{marginTop:18,padding:\"12px 18px\",border:\"1px solid rgba(255,255,255,.4)\",borderRadius:24,color:\"white\",textDecoration:\"none\",fontSize:13,pointerEvents:\"auto\"}}>进入图文科普版本</a>}\n\n                        <div style={{"
+loading=loading.replace("                        </button>\\n\\n                        <div style={{",'                        </button>\\n                        {gpuError && <a href="../?chapters=1" style={{marginTop:18,padding:"12px 18px",border:"1px solid rgba(255,255,255,.4)",borderRadius:24,color:"white",textDecoration:"none",fontSize:13,pointerEvents:"auto"}}>进入图文科普版本</a>}\\n\\n                        <div style={{');
 if(loading.includes("After drifting")||loading.includes("With each step"))throw new Error("English opening copy was not replaced.");
 await writeFile(loadingPath,loading);
 const htmlPath=resolve(source,"index.html");

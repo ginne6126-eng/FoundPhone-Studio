@@ -67,7 +67,7 @@ for (const folder of ["audio", "textures"]) {
 // Resolve False Earth's origin-root media URLs relative to /experience/ so they work
 // both on GitHub Pages and on the Cloudflare Worker preview.
 for (const name of await readdir(resolve(output, "assets"))) {
-  if (!/\\.(?:js|css)$/.test(name)) continue;
+  if (!name.endsWith(".js") && !name.endsWith(".css")) continue;
   const filePath = resolve(output, "assets", name);
   const content = await readFile(filePath, "utf8");
   const patched = content

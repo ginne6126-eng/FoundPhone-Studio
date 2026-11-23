@@ -49,18 +49,18 @@ const gpuStateLines = [
   "    const gpuError = useGameStore((state) => state.gpuError);"
 ];
 for (const line of gpuStateLines) {
-  if (!app.includes(line + "\\n")) throw new Error("Expected WebGPU state line missing: " + line);
-  app = app.replace(line + "\\n", "");
+  if (!app.includes(line + "\n")) throw new Error("Expected WebGPU state line missing: " + line);
+  app = app.replace(line + "\n", "");
 }
 const gpuCheckStart = app.indexOf("    // Check WebGPU support on mount");
 const gpuCheckEndMarker = "    }, [setGpuError]);";
 const gpuCheckEnd = app.indexOf(gpuCheckEndMarker, gpuCheckStart);
 if (gpuCheckStart < 0 || gpuCheckEnd < 0) throw new Error("Expected WebGPU preflight check not found; aborting.");
 app = app.slice(0, gpuCheckStart) + app.slice(gpuCheckEnd + gpuCheckEndMarker.length + 1);
-const canvasGate = "        {!gpuError && (\\n            <Canvas";
+const canvasGate = "        {!gpuError && (\n            <Canvas";
 if (!app.includes(canvasGate)) throw new Error("Expected WebGPU canvas gate not found; aborting.");
 app = app.replace(canvasGate, "        <Canvas");
-const canvasGateEnd = "            </Canvas>\\n        )}";
+const canvasGateEnd = "            </Canvas>\n        )}";
 if (!app.includes(canvasGateEnd)) throw new Error("Expected WebGPU canvas gate ending not found; aborting.");
 app = app.replace(canvasGateEnd, "            </Canvas>");
 

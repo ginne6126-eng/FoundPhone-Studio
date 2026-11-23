@@ -63,6 +63,18 @@ for (const folder of ["audio", "textures"]) {
     await cp(sourceDir, resolve(root, "dist", folder), { recursive: true, force: true });
   }
 }
+// GitHub Pages hosts this project below /FoundPhone-Studio/, not at the domain root.
+// Resolve False Earth's origin-root media URLs relative to /experience/ so they work
+// both on GitHub Pages and on the Cloudflare Worker preview.
+for (const name of await readdir(resolve(output, "assets"))) {
+  if (!/\\.(?:js|css)$/.test(name)) continue;
+  const filePath = resolve(output, "assets", name);
+  const content = await readFile(filePath, "utf8");
+  const patched = content
+    .replaceAll("/textures/", "../textures/")
+    .replaceAll("/audio/", "../audio/");
+  if (patched !== content) await writeFile(filePath, patched);
+}
 const assetDir=resolve(output,"assets");
 for(const name of await readdir(assetDir)){
   if(name.endsWith(".map"))await rm(resolve(assetDir,name),{force:true});

@@ -44,16 +44,25 @@ app=app.replace('import { Environment, PerformanceMonitor, useGLTF } from "@reac
 .replace("useGLTF.preload(MODEL_PATHS);\n\npreloadVATAssets('/vat/Rose_meta.json');\npreloadVATAssets('/vat/RoseLowPoly_meta.json');\n",'')
 .replace('                    <KTX2Preloader paths={ROSE_TEXTURES} />\n                    <KTX2Preloader paths={BODY_TEXTURE_PATHS} />\n                    <KTX2Preloader paths={DETAIL_TEXTURE_PATHS} />\n','');
 
-const gpuGuard = /    const setGpuError = useGameStore\\(\\(state\\) => state\\.setGpuError\\);\\n    const gpuError = useGameStore\\(\\(state\\) => state\\.gpuError\\);\\n/;
-if (!gpuGuard.test(app)) throw new Error("Expected WebGPU guard state not found; aborting.");
-app = app.replace(gpuGuard, "");
-const gpuCheck = /    \/\/ Check WebGPU support on mount[\\s\\S]*?    \\}, \\[setGpuError\\]\\);\\n/;
-if (!gpuCheck.test(app)) throw new Error("Expected WebGPU preflight check not found; aborting.");
-app = app.replace(gpuCheck, "");
-if (!app.includes("        {!gpuError && (\\n            <Canvas")) throw new Error("Expected WebGPU canvas gate not found; aborting.");
-app = app.replace("        {!gpuError && (\\n            <Canvas", "        <Canvas");
-if (!app.includes("            </Canvas>\\n        )}")) throw new Error("Expected WebGPU canvas gate ending not found; aborting.");
-app = app.replace("            </Canvas>\\n        )}", "            </Canvas>");
+const gpuStateLines = [
+  "    const setGpuError = useGameStore((state) => state.setGpuError);",
+  "    const gpuError = useGameStore((state) => state.gpuError);"
+];
+for (const line of gpuStateLines) {
+  if (!app.includes(line + "\\n")) throw new Error("Expected WebGPU state line missing: " + line);
+  app = app.replace(line + "\\n", "");
+}
+const gpuCheckStart = app.indexOf("    // Check WebGPU support on mount");
+const gpuCheckEndMarker = "    }, [setGpuError]);";
+const gpuCheckEnd = app.indexOf(gpuCheckEndMarker, gpuCheckStart);
+if (gpuCheckStart < 0 || gpuCheckEnd < 0) throw new Error("Expected WebGPU preflight check not found; aborting.");
+app = app.slice(0, gpuCheckStart) + app.slice(gpuCheckEnd + gpuCheckEndMarker.length + 1);
+const canvasGate = "        {!gpuError && (\\n            <Canvas";
+if (!app.includes(canvasGate)) throw new Error("Expected WebGPU canvas gate not found; aborting.");
+app = app.replace(canvasGate, "        <Canvas");
+const canvasGateEnd = "            </Canvas>\\n        )}";
+if (!app.includes(canvasGateEnd)) throw new Error("Expected WebGPU canvas gate ending not found; aborting.");
+app = app.replace(canvasGateEnd, "            </Canvas>");
 
 if(app.includes("KTX2Preloader")||app.includes("MODEL_PATHS")||app.includes("useGLTF.preload"))throw new Error("Astronaut asset preloads were not fully removed; aborting.");
 await writeFile(appPath,app);

@@ -22,6 +22,57 @@ await writeFile(loadingPath,loading);
 const htmlPath=resolve(source,"index.html");
 let html=await readFile(htmlPath,"utf8");
 html=html.replace('<html lang="en">','<html lang="zh-CN">').replace("<title>False Earth</title>","<title>星星的孩子｜进入陌生星球</title>").replace('maximum-scale=1.0, user-scalable=0, ','');
+const bootDiagnostic = String.raw\`<div id="boot-diagnostic" style="position:fixed;z-index:999999;inset:0;display:flex;align-items:center;justify-content:center;background:#080b12;color:#fff;font:14px/1.6 system-ui;padding:24px;text-align:left">
+  <div style="max-width:720px;width:100%">
+    <div style="font-size:18px;margin-bottom:12px">正在启动 3D 场景…</div>
+    <pre id="boot-diagnostic-detail" style="white-space:pre-wrap;overflow-wrap:anywhere;margin:0;opacity:.9">正在加载场景模块，请稍候。</pre>
+  </div>
+</div>
+<script>
+(() => {
+  const panel = document.getElementById("boot-diagnostic");
+  const detail = document.getElementById("boot-diagnostic-detail");
+  const show = message => {
+    if (panel) panel.style.display = "flex";
+    if (detail) detail.textContent = String(message).slice(0, 3000);
+  };
+  const hide = () => { if (panel) panel.style.display = "none"; };
+  window.addEventListener("error", event => {
+    if (event instanceof ErrorEvent) show("脚本运行错误：" + (event.message || event.filename || "未知错误"));
+  });
+  window.addEventListener("unhandledrejection", event => {
+    const reason = event.reason;
+    show("未处理的异步错误：" + (reason && reason.stack ? reason.stack : String(reason ?? "未知错误")));
+  });
+  const moduleScript = document.querySelector('script[type="module"]');
+  if (moduleScript) moduleScript.addEventListener("error", () => show("3D 程序入口加载失败：浏览器未能加载 src/index.jsx 或其依赖模块。请截图反馈。"));
+  const root = document.getElementById("root");
+  if (root) {
+    const observer = new MutationObserver(() => {
+      if (root.childNodes.length > 0) {
+        window.__experienceAppMounted = true;
+        hide();
+        observer.disconnect();
+      }
+    });
+    observer.observe(root, { childList: true });
+    if (root.childNodes.length > 0) {
+      window.__experienceAppMounted = true;
+      hide();
+      observer.disconnect();
+    }
+  }
+  window.setTimeout(() => {
+    if (!window.__experienceAppMounted) show("3D 页面启动超时：React 应用没有挂载到页面。请将这段提示截图发给开发者。");
+  }, 12000);
+})();
+</script>\`;
+if (!html.includes('id="boot-diagnostic"')) {
+  const moduleTag = '<script type="module" src="./src/index.jsx"></script>';
+  if (!html.includes(moduleTag)) throw new Error("3D module script tag not found; boot diagnostic was not injected.");
+  html = html.replace(moduleTag, bootDiagnostic + "\\n    " + moduleTag);
+}
+
 if(html.includes("<title>False Earth</title>"))throw new Error("Original English document title remains.");
 await writeFile(htmlPath,html);
 const uiPath=resolve(source,"src/ui/UI.tsx");

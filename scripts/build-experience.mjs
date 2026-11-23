@@ -47,23 +47,26 @@ const bootDiagnostic = String.raw`<div id="boot-diagnostic" style="position:fixe
   const moduleScript = document.querySelector('script[type="module"]');
   if (moduleScript) moduleScript.addEventListener("error", () => show("3D 程序入口加载失败：浏览器未能加载 src/index.jsx 或其依赖模块。请截图反馈。"));
   const root = document.getElementById("root");
+  const appHasVisibleText = () => Boolean(root && root.textContent && root.textContent.trim().length > 0);
   if (root) {
     const observer = new MutationObserver(() => {
-      if (root.childNodes.length > 0) {
+      // A React root can contain an empty canvas even when WebGPU rendering failed.
+      // Only hide the diagnostic once the actual HTML loading/interface text appears.
+      if (appHasVisibleText()) {
         window.__experienceAppMounted = true;
         hide();
         observer.disconnect();
       }
     });
-    observer.observe(root, { childList: true });
-    if (root.childNodes.length > 0) {
+    observer.observe(root, { childList: true, subtree: true, characterData: true });
+    if (appHasVisibleText()) {
       window.__experienceAppMounted = true;
       hide();
       observer.disconnect();
     }
   }
   window.setTimeout(() => {
-    if (!window.__experienceAppMounted) show("3D 页面启动超时：React 应用没有挂载到页面。请将这段提示截图发给开发者。");
+    if (!window.__experienceAppMounted) show("3D 页面启动超时：页面没有渲染出可见的 HTML 界面文字。可能是 React 启动、WebGPU 初始化或脚本加载失败。请将这段提示截图发给开发者。");
   }, 12000);
 })();
 </script>`;

@@ -22,7 +22,7 @@ await writeFile(loadingPath,loading);
 const htmlPath=resolve(source,"index.html");
 let html=await readFile(htmlPath,"utf8");
 html=html.replace('<html lang="en">','<html lang="zh-CN">').replace("<title>False Earth</title>","<title>星星的孩子｜进入陌生星球</title>").replace('maximum-scale=1.0, user-scalable=0, ','');
-const bootDiagnostic = String.raw\`<div id="boot-diagnostic" style="position:fixed;z-index:999999;inset:0;display:flex;align-items:center;justify-content:center;background:#080b12;color:#fff;font:14px/1.6 system-ui;padding:24px;text-align:left">
+const bootDiagnostic = String.raw`<div id="boot-diagnostic" style="position:fixed;z-index:999999;inset:0;display:flex;align-items:center;justify-content:center;background:#080b12;color:#fff;font:14px/1.6 system-ui;padding:24px;text-align:left">
   <div style="max-width:720px;width:100%">
     <div style="font-size:18px;margin-bottom:12px">正在启动 3D 场景…</div>
     <pre id="boot-diagnostic-detail" style="white-space:pre-wrap;overflow-wrap:anywhere;margin:0;opacity:.9">正在加载场景模块，请稍候。</pre>
@@ -66,7 +66,7 @@ const bootDiagnostic = String.raw\`<div id="boot-diagnostic" style="position:fix
     if (!window.__experienceAppMounted) show("3D 页面启动超时：React 应用没有挂载到页面。请将这段提示截图发给开发者。");
   }, 12000);
 })();
-</script>\`;
+</script>`;
 if (!html.includes('id="boot-diagnostic"')) {
   const moduleTag = '<script type="module" src="./src/index.jsx"></script>';
   if (!html.includes(moduleTag)) throw new Error("3D module script tag not found; boot diagnostic was not injected.");

@@ -14,7 +14,9 @@ loading=loading.replace("FALSE EARTH","星星的孩子")
 .replace(/<p>\s*With each step, something descends[\s\S]*?<\/p>/,"<p>不需要完成任务，也没有正确路线。停下来、转身或继续向前，都由你决定。</p>")
 .replace("[ START ]","进入陌生星球")
 .replace('label="MOVE"','label="移动"').replace('label="RUN"','label="奔跑"').replace('label="CAM"','label="镜头"').replace('label="LOOK"','label="观察"')
-.replace("SYSTEM INCOMPATIBLE","当前浏览器暂不支持此体验");
+.replace("SYSTEM INCOMPATIBLE","当前浏览器暂不支持 3D 场景");
+loading=loading.replace("ERROR CODE: {gpuError}","当前设备或浏览器没有可用的 WebGPU 图形设备。你仍可进入图文科普版本，继续浏览全部内容。");
+loading=loading.replace("                        </button>\n\n                        <div style={{","                        </button>\n                        {gpuError && <a href=\"../?chapters=1\" style={{marginTop:18,padding:\"12px 18px\",border:\"1px solid rgba(255,255,255,.4)\",borderRadius:24,color:\"white\",textDecoration:\"none\",fontSize:13,pointerEvents:\"auto\"}}>进入图文科普版本</a>}\n\n                        <div style={{"
 if(loading.includes("After drifting")||loading.includes("With each step"))throw new Error("English opening copy was not replaced.");
 await writeFile(loadingPath,loading);
 const htmlPath=resolve(source,"index.html");
@@ -44,26 +46,8 @@ app=app.replace('import { Environment, PerformanceMonitor, useGLTF } from "@reac
 .replace("useGLTF.preload(MODEL_PATHS);\n\npreloadVATAssets('/vat/Rose_meta.json');\npreloadVATAssets('/vat/RoseLowPoly_meta.json');\n",'')
 .replace('                    <KTX2Preloader paths={ROSE_TEXTURES} />\n                    <KTX2Preloader paths={BODY_TEXTURE_PATHS} />\n                    <KTX2Preloader paths={DETAIL_TEXTURE_PATHS} />\n','');
 
-const gpuStateLines = [
-  "    const setGpuError = useGameStore((state) => state.setGpuError);",
-  "    const gpuError = useGameStore((state) => state.gpuError);"
-];
-for (const line of gpuStateLines) {
-  if (!app.includes(line + "\n")) throw new Error("Expected WebGPU state line missing: " + line);
-  app = app.replace(line + "\n", "");
-}
-const gpuCheckStart = app.indexOf("    // Check WebGPU support on mount");
-const gpuCheckEndMarker = "    }, [setGpuError]);";
-const gpuCheckEnd = app.indexOf(gpuCheckEndMarker, gpuCheckStart);
-if (gpuCheckStart < 0 || gpuCheckEnd < 0) throw new Error("Expected WebGPU preflight check not found; aborting.");
-app = app.slice(0, gpuCheckStart) + app.slice(gpuCheckEnd + gpuCheckEndMarker.length + 1);
-const canvasGate = "        {!gpuError && (\n            <Canvas";
-if (!app.includes(canvasGate)) throw new Error("Expected WebGPU canvas gate not found; aborting.");
-app = app.replace(canvasGate, "        <Canvas");
-const canvasGateEnd = "            </Canvas>\n        )}";
-if (!app.includes(canvasGateEnd)) throw new Error("Expected WebGPU canvas gate ending not found; aborting.");
-app = app.replace(canvasGateEnd, "            </Canvas>");
-
+// Keep the original WebGPU capability check and Canvas gate. Without them,
+// unsupported browsers can fail during renderer initialization and show a blank page.
 
 const diagnosticState = "    const [runtimeError, setRuntimeError] = useState<string | null>(null);";
 const diagnosticEffect = String.raw`    useEffect(() => {

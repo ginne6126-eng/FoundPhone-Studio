@@ -71,8 +71,8 @@ for (const name of await readdir(resolve(output, "assets"))) {
   const filePath = resolve(output, "assets", name);
   const content = await readFile(filePath, "utf8");
   const patched = content
-    .replaceAll("/textures/", "../textures/")
-    .replaceAll("/audio/", "../audio/");
+    .replaceAll("/textures/", "../../textures/")
+    .replaceAll("/audio/", "../../audio/");
   if (patched !== content) await writeFile(filePath, patched);
 }
 const assetDir=resolve(output,"assets");

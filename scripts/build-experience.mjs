@@ -64,6 +64,33 @@ const canvasGateEnd = "            </Canvas>\n        )}";
 if (!app.includes(canvasGateEnd)) throw new Error("Expected WebGPU canvas gate ending not found; aborting.");
 app = app.replace(canvasGateEnd, "            </Canvas>");
 
+
+const diagnosticState = "    const [runtimeError, setRuntimeError] = useState<string | null>(null);";
+const diagnosticEffect = String.raw\`    useEffect(() => {
+        const onError = (event: ErrorEvent) => setRuntimeError(event.message || "Unknown script error");
+        const onRejection = (event: PromiseRejectionEvent) => {
+            const reason = event.reason;
+            setRuntimeError(reason instanceof Error ? reason.message : String(reason ?? "Unknown promise rejection"));
+        };
+        window.addEventListener("error", onError);
+        window.addEventListener("unhandledrejection", onRejection);
+        return () => {
+            window.removeEventListener("error", onError);
+            window.removeEventListener("unhandledrejection", onRejection);
+        };
+    }, []);
+\`;
+if (!app.includes("    const [dpr, setDpr] = useState(1.5);")) throw new Error("App diagnostic insertion point missing.");
+app = app.replace("    const [dpr, setDpr] = useState(1.5);", "    const [dpr, setDpr] = useState(1.5);\\n" + diagnosticState + "\\n" + diagnosticEffect);
+const uiAnchor = "        <UI />";
+if (!app.includes(uiAnchor)) throw new Error("App UI diagnostic insertion point missing.");
+const diagnosticOverlay = String.raw\`
+        {runtimeError && <div role="alert" style={{position:"fixed",left:12,right:12,bottom:12,zIndex:100000,padding:"14px 16px",border:"1px solid rgba(255,120,120,.65)",borderRadius:10,background:"rgba(20,8,12,.96)",color:"#fff",fontFamily:"monospace",fontSize:12,lineHeight:1.5,overflowWrap:"anywhere"}}>
+            <strong>场景启动遇到错误</strong><div style={{marginTop:6}}>{runtimeError}</div><div style={{marginTop:6,opacity:.75}}>请截图反馈此信息</div>
+        </div>}
+\`;
+app = app.replace(uiAnchor, uiAnchor + diagnosticOverlay);
+
 if(app.includes("KTX2Preloader")||app.includes("MODEL_PATHS")||app.includes("useGLTF.preload"))throw new Error("Astronaut asset preloads were not fully removed; aborting.");
 await writeFile(appPath,app);
 run("npm",["install","--no-audit","--no-fund"],source);

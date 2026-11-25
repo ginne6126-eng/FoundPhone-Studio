@@ -20,7 +20,6 @@ export function UI() {
             zIndex: 10 // Ensure UI is above Canvas
         }}>
             <LoadingScreen />
-            <a href="../?chapters=1" style={{position:"fixed",left:18,top:18,zIndex:60,pointerEvents:"auto",padding:"9px 14px",border:"1px solid rgba(255,255,255,.32)",borderRadius:24,color:"#eef3f8",background:"rgba(5,12,20,.38)",backdropFilter:"blur(12px)",fontSize:12,textDecoration:"none",letterSpacing:".08em"}}>探索手册 ↗</a>
 
             <div style={{
                 position: 'absolute',

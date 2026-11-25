@@ -89,7 +89,7 @@ export function CameraViewControl({ boneName = 'head' }: Props) {
       minDistance={2}
       maxDistance={20}
       maxPolarAngle={Math.PI / 2}
-      smoothTime={isControlEnabled ? 0.12 : 3.2}
+      smoothTime={isControlEnabled ? 0.1 : 1}
     />
   );
 }

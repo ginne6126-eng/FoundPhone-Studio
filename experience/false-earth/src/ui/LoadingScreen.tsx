@@ -82,8 +82,8 @@ export function LoadingScreen() {
         }
     }, [active, loaded, total]);
 
-    // 不支持 WebGPU 时（微信内置浏览器、iOS 26 以下、部分国产浏览器等）直接引导到图文科普版本，
-    // 避免用户卡在"暂不支持 3D 场景"的死路上。
+    // 不支持 WebGPU 时（微信内置浏览器、iOS 26 以下、部分国产浏览器）直接引导到图文科普版本，
+    // 避免用户卡在“暂不支持 3D 场景”的死路上。
     const goChaptersFallback = () => {
         const sharecode = new URLSearchParams(window.location.search).get('sharecode');
         window.location.href = sharecode
@@ -155,7 +155,7 @@ export function LoadingScreen() {
         transition: 'all 0.5s ease',
         transform: 'scale(1)',
         cursor: gpuError ? 'pointer' : (isReadyToStart ? 'pointer' : 'wait'),
-        opacity: gpuError ? 1 : 1,
+        opacity: 1,
         whiteSpace: 'nowrap',
         animation: isReadyToStart ? 'breathe 2s infinite ease-in-out' : 'none',
     };
@@ -178,7 +178,7 @@ export function LoadingScreen() {
                         letterSpacing: isMobile ? '0.3rem' : '0.5rem',
                         marginBottom: isMobileLandscape ? '1rem' : '2rem',
                     }}>
-                        星星的孩子
+                        FALSE EARTH
                     </div>
 
                     {/* Intro Text */}
@@ -189,9 +189,16 @@ export function LoadingScreen() {
                         marginBottom: isMobileLandscape ? '0' : '3rem',
                         fontSize: isMobileLandscape ? '0.75rem' : 'inherit',
                     }}>
-                        <p>我们生活在同一个世界里，却不一定拥有相同的感受。这里是一颗陌生的星球。你可以按照自己的节奏，慢慢开始探索。</p>
+                        <p>
+                            After drifting beyond the edge of space, the journey reaches ground again.
+                            A surface extends in every direction, without a visible boundary.
+                            No matter how far it continues, the horizon does not draw closer.
+                        </p>
 
-                        <p>不需要完成任务，也没有正确路线。停下来、转身或继续向前，都由你决定。</p>
+                        <p>
+                            With each step, something descends and alters the surface, leaving traces behind.
+                            The drift does not end here; it continues in another form.
+                        </p>
 {/* 
                         {!gpuError && (
                             <p>
@@ -222,7 +229,7 @@ export function LoadingScreen() {
                             {gpuError ? (
                                 <span style={{ letterSpacing: '2px' }}>进入图文科普版本 →</span>
                             ) : isReadyToStart ? (
-                                "进入陌生星球"
+                                "[ START ]"
                             ) : (
                                 <span>
                                     {active ? "LOADING" : "CALIBRATING"}... {displayProgress}%
@@ -253,16 +260,16 @@ export function LoadingScreen() {
                         ) : (
                             isMobile ? (
                                 <>
-                                    <InstructionRow input={<Key>L-STICK</Key>} label="移动" />
+                                    <InstructionRow input={<Key>L-STICK</Key>} label="MOVE" />
                                     {/* Hide 'Touch' instruction on very small landscape screens if crowded */}
-                                    <InstructionRow input={<Key>TOUCH</Key>} label="观察" />
+                                    <InstructionRow input={<Key>TOUCH</Key>} label="LOOK" />
                                 </>
                             ) : (
                                 <>
-                                    <InstructionRow input={<><Key>W</Key><Key>A</Key><Key>S</Key><Key>D</Key></>} label="移动" />
-                                    <InstructionRow input={<Key>SHIFT</Key>} label="奔跑" />
-                                    <InstructionRow input={<Key>C</Key>} label="镜头" />
-                                    <InstructionRow input={<MouseIcon />} label="观察" />
+                                    <InstructionRow input={<><Key>W</Key><Key>A</Key><Key>S</Key><Key>D</Key></>} label="MOVE" />
+                                    <InstructionRow input={<Key>SHIFT</Key>} label="RUN" />
+                                    <InstructionRow input={<Key>C</Key>} label="CAM" />
+                                    <InstructionRow input={<MouseIcon />} label="LOOK" />
                                 </>
                             )
                         )}

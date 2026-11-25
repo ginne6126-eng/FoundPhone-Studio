@@ -1,5 +1,5 @@
-import { Environment, PerformanceMonitor } from "@react-three/drei";
-import { LevaWrapper, AudioManager, KeyboardMapper } from "@core";
+import { Environment, PerformanceMonitor, useGLTF } from "@react-three/drei";
+import { LevaWrapper, AudioManager, KeyboardMapper, KTX2Preloader, preloadVATAssets } from "@core";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { useEffect, Suspense, useMemo, useState } from "react";
 import { DirectionalLight } from "../components/DirectionalLight";
@@ -15,6 +15,8 @@ import * as THREE from "three/webgpu";
 import { input, keyBindings } from "../core/input/controls";
 import { useShortcut } from "@core/hooks/useShortcut";
 import { AudioLoader } from 'three';
+import { ROSE_TEXTURES } from "../components/Rose/core/config";
+import { BODY_TEXTURE_PATHS, DETAIL_TEXTURE_PATHS, MODEL_PATHS } from '../components/character/config';
 
 
 useLoader.preload(AudioLoader,
@@ -26,54 +28,45 @@ useLoader.preload(AudioLoader,
 
 useLoader.preload(AudioLoader, ['/audio/wave01.mp3']);
 
+useGLTF.preload(MODEL_PATHS);
+
+preloadVATAssets('/vat/Rose_meta.json');
+preloadVATAssets('/vat/RoseLowPoly_meta.json');
 
 export const BeamSceneContext = createContext<THREE.Scene | null>(null);
 
 export default function App() {
     const beamScene = useMemo(() => new THREE.Scene(), []);
     const [dpr, setDpr] = useState(1.5);
-    const [gpuCheckComplete, setGpuCheckComplete] = useState(false);
-    const [runtimeError, setRuntimeError] = useState<string | null>(null);
-    useEffect(() => {
-        const onError = (event: ErrorEvent) => setRuntimeError(event.message || "Unknown script error");
-        const onRejection = (event: PromiseRejectionEvent) => {
-            const reason = event.reason;
-            setRuntimeError(reason instanceof Error ? reason.message : String(reason ?? "Unknown promise rejection"));
-        };
-        window.addEventListener("error", onError);
-        window.addEventListener("unhandledrejection", onRejection);
-        return () => {
-            window.removeEventListener("error", onError);
-            window.removeEventListener("unhandledrejection", onRejection);
-        };
-    }, []);
-
 
     const toggleCameraMode = useGameStore((state) => state.toggleCameraMode);
     const setGpuError = useGameStore((state) => state.setGpuError);
     const setAudioListener = useGameStore((state) => state.setAudioListener);
     const gpuError = useGameStore((state) => state.gpuError);
 
+    // Check WebGPU support on mount
     useEffect(() => {
-        let cancelled = false;
         const checkWebGPU = async () => {
+            if (!navigator.gpu) {
+                setGpuError("WEBGPU NOT SUPPORTED");
+                console.error("WebGPU is not supported in this browser");
+                return;
+            }
             try {
-                if (!navigator.gpu) throw new Error("当前浏览器未提供 WebGPU");
                 const adapter = await navigator.gpu.requestAdapter();
-                if (!adapter) throw new Error("没有可用的 WebGPU 图形设备");
-                if (typeof adapter.requestDevice === "function") {
-                    const device = await adapter.requestDevice();
-                    device.destroy?.();
+                if (!adapter) {
+                    setGpuError("NO GPU ADAPTER FOUND");
+                    console.error("No GPU adapter found");
+                    return;
                 }
-                if (!cancelled) setGpuError(null);
-            } catch (error) {
-                if (!cancelled) setGpuError(error instanceof Error ? error.message : String(error));
-            } finally {
-                if (!cancelled) setGpuCheckComplete(true);
+                console.log('WebGPU initialized successfully');
+                setGpuError(null); // Clear any previous errors
+            } catch (e) {
+                setGpuError("GPU INIT FAILED");
+                console.error("WebGPU initialization failed:", e);
             }
         };
-        void checkWebGPU();
-        return () => { cancelled = true; };
+        checkWebGPU();
     }, [setGpuError]);
 
     useShortcut('c', () => {
@@ -84,14 +77,10 @@ export default function App() {
         <LevaWrapper collapsed={true} initialHidden={true} />
         <DeviceDetector />
         <UI />
-        {runtimeError && <div role="alert" style={{position:"fixed",left:12,right:12,bottom:12,zIndex:100000,padding:"14px 16px",border:"1px solid rgba(255,120,120,.65)",borderRadius:10,background:"rgba(20,8,12,.96)",color:"#fff",fontFamily:"monospace",fontSize:12,lineHeight:1.5,overflowWrap:"anywhere"}}>
-            <strong>场景启动遇到错误</strong><div style={{marginTop:6}}>{runtimeError}</div><div style={{marginTop:6,opacity:.75}}>请截图反馈此信息</div>
-        </div>}
-
         <KeyboardMapper input={input} keyMap={keyBindings} />
 
 
-        {gpuCheckComplete && !gpuError && (
+        {!gpuError && (
             <Canvas
                 camera={{
                     fov: 45,
@@ -116,6 +105,9 @@ export default function App() {
                 dpr={dpr}
             >
                 <Suspense fallback={null}>
+                    <KTX2Preloader paths={ROSE_TEXTURES} />
+                    <KTX2Preloader paths={BODY_TEXTURE_PATHS} />
+                    <KTX2Preloader paths={DETAIL_TEXTURE_PATHS} />
                 </Suspense>
 
                 <AudioManager onListenerCreated={setAudioListener} />

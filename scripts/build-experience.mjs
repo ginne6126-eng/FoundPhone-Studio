@@ -4,8 +4,8 @@ import { resolve } from "node:path";
 const root=process.cwd(), source=resolve(root,"experience/false-earth");
 const exists=p=>access(p,constants.F_OK).then(()=>true,()=>false);
 function run(cmd,args,cwd){const r=spawnSync(cmd,args,{cwd,stdio:"inherit",shell:process.platform==="win32"});if(r.status!==0)throw new Error(`${cmd} ${args.join(" ")} failed (${r.status})`);}
-if(!(await exists(resolve(source,".git"))))throw new Error("False Earth submodule missing. Run git submodule update --init --recursive.");
-run("git",["submodule","update","--init","--recursive"],source);
+if(!(await exists(source)))throw new Error("False Earth 源码目录缺失：experience/false-earth。");
+if(await exists(resolve(source,".git")))run("git",["submodule","update","--init","--recursive"],source);
 await writeFile(resolve(source,"src/components/character/Character.tsx"),await readFile(resolve(root,"experience/overrides/Character.tsx"),"utf8"));
 const loadingPath=resolve(source,"src/ui/LoadingScreen.tsx");
 let loading=await readFile(loadingPath,"utf8");

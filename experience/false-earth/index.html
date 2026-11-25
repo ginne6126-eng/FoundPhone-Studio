@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="icon" href="textures/favicon.png" type="image/png">
+    <title>星星的孩子｜进入陌生星球</title>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="boot-diagnostic" style="position:fixed;z-index:999999;inset:0;display:flex;align-items:center;justify-content:center;background:#080b12;color:#fff;font:14px/1.6 system-ui;padding:24px;text-align:left">
+  <div style="max-width:720px;width:100%">
+    <div style="font-size:18px;margin-bottom:12px">正在启动 3D 场景…</div>
+    <pre id="boot-diagnostic-detail" style="white-space:pre-wrap;overflow-wrap:anywhere;margin:0;opacity:.9">正在加载场景模块，请稍候。</pre>
+  </div>
+</div>
+<script>
+(() => {
+  const panel = document.getElementById("boot-diagnostic");
+  const detail = document.getElementById("boot-diagnostic-detail");
+  const show = message => {
+    if (panel) panel.style.display = "flex";
+    if (detail) detail.textContent = String(message).slice(0, 3000);
+  };
+  const hide = () => { if (panel) panel.style.display = "none"; };
+  window.addEventListener("error", event => {
+    if (event instanceof ErrorEvent) show("脚本运行错误：" + (event.message || event.filename || "未知错误"));
+  });
+  window.addEventListener("unhandledrejection", event => {
+    const reason = event.reason;
+    show("未处理的异步错误：" + (reason && reason.stack ? reason.stack : String(reason ?? "未知错误")));
+  });
+  const moduleScript = document.querySelector('script[type="module"]');
+  if (moduleScript) moduleScript.addEventListener("error", () => show("3D 程序入口加载失败：浏览器未能加载 src/index.jsx 或其依赖模块。请截图反馈。"));
+  const root = document.getElementById("root");
+  const appHasVisibleText = () => Boolean(root && root.textContent && root.textContent.trim().length > 0);
+  if (root) {
+    const observer = new MutationObserver(() => {
+      // A React root can contain an empty canvas even when WebGPU rendering failed.
+      // Only hide the diagnostic once the actual HTML loading/interface text appears.
+      if (appHasVisibleText()) {
+        window.__experienceAppMounted = true;
+        hide();
+        observer.disconnect();
+      }
+    });
+    observer.observe(root, { childList: true, subtree: true, characterData: true });
+    if (appHasVisibleText()) {
+      window.__experienceAppMounted = true;
+      hide();
+      observer.disconnect();
+    }
+  }
+  window.setTimeout(() => {
+    if (!window.__experienceAppMounted) show("3D 页面启动超时：页面没有渲染出可见的 HTML 界面文字。可能是 React 启动、WebGPU 初始化或脚本加载失败。请将这段提示截图发给开发者。");
+  }, 12000);
+})();
+</script>\n    <script type="module" src="./src/index.jsx"></script>
+</body>
+</html>

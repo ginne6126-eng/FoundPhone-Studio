@@ -174,7 +174,7 @@ await Promise.all([
 ]);
 // False Earth references public media with origin-root URLs such as /textures/... and /audio/...
 // The experience is hosted under /experience/, so mirror its public folders at the Worker root.
-for (const folder of ["audio", "textures"]) {
+for (const folder of ["audio", "textures", "vat"]) {
   const sourceDir = resolve(output, folder);
   if (await exists(sourceDir)) {
     await cp(sourceDir, resolve(root, "dist", folder), { recursive: true, force: true });
